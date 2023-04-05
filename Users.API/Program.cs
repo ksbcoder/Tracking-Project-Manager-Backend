@@ -18,8 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(config => config.AddDataReaderMapping(), typeof(ConfigurationProfile));
 
-builder.Services.AddScoped<IWorkTeamUseCase, WorkTeamUseCase>();
-builder.Services.AddScoped<IWorkTeamRepository, WorkTeamRepository>();
+builder.Services.AddScoped<IUserUseCase, UserUseCase>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddSingleton<IContext>(provider => new Context(builder.Configuration.GetConnectionString("urlConnection"), "TrackingProjectManager"));
 

@@ -15,7 +15,5 @@ namespace Users.Infrastructure
         }
 
         public IMongoCollection<UserMongo> Users => _database.GetCollection<UserMongo>("Users");
-
-        public IMongoCollection<WorkTeamMongo> WorkTeams => _database.GetCollection<WorkTeamMongo>("WorkTeams");
     }
 }

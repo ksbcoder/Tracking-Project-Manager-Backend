@@ -9,8 +9,9 @@ namespace Users.API.AutoMapper
     {
         public ConfigurationProfile()
         {
-            CreateMap<WorkTeam, NewWorkTeam>().ReverseMap();
-            CreateMap<WorkTeamMongo, WorkTeam>().ReverseMap();
+            CreateMap<User, NewUser>().ReverseMap();
+            CreateMap<UserMongo, User>().ReverseMap();
+            CreateMap<UserMongo, NewUser>().ReverseMap();
         }
     }
 }
