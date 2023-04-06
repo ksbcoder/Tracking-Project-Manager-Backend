@@ -25,7 +25,7 @@ builder.Services.AddScoped<IUserCommandUseCase, UserCommandUseCase>();
 builder.Services.AddScoped<IUserQueryRepository, UserRepository>();
 builder.Services.AddScoped<IUserCommandRepository, UserRepository>();
 
-builder.Services.AddSingleton<IContext>(provider => new Context(builder.Configuration.GetConnectionString("urlConnection"), "TrackingProjectManager"));
+builder.Services.AddSingleton<IContext>(provider => new Context(builder.Configuration.GetConnectionString("urlConnectionMongo"), "TrackingProjectManager"));
 
 var app = builder.Build();
 

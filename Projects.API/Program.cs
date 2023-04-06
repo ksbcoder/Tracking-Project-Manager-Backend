@@ -23,7 +23,7 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 builder.Services.AddTransient<IDbConnectionBuilder>(e =>
 {
-    return new DbConnectionBuilder(builder.Configuration.GetConnectionString("urlConnection"));
+    return new DbConnectionBuilder(builder.Configuration.GetConnectionString("urlConnectionSQL"));
 });
 
 var app = builder.Build();
