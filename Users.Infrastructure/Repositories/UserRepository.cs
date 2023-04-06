@@ -31,6 +31,8 @@ namespace Users.Infrastructure.Repositories
             Guard.Against.NullOrEmpty(userToCreate.UidUser, nameof(userToCreate.UidUser));
             Guard.Against.NullOrEmpty(userToCreate.UserName, nameof(userToCreate.UserName));
             Guard.Against.NullOrEmpty(userToCreate.Email, nameof(userToCreate.Email));
+            Guard.Against.OutOfRange(userToCreate.EfficiencyRate, nameof(userToCreate.EfficiencyRate), 0, 100);
+            Guard.Against.Negative(userToCreate.TasksCompleted, nameof(userToCreate.TasksCompleted));
             Guard.Against.EnumOutOfRange(userToCreate.Role, nameof(userToCreate.Role));
             Guard.Against.EnumOutOfRange(userToCreate.StateUser, nameof(userToCreate.StateUser));
 
@@ -62,28 +64,19 @@ namespace Users.Infrastructure.Repositories
                             $"There isn't an user available with this uidUser: {uidUser}."));
         }
 
-        public async Task<List<User>> GetUsersByIncriptionIdAsync(string uidUser)
+        public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, User user)
         {
-            var usersCursor = await _usersCollection.FindAsync(u => u.UidUser == uidUser
-                            && u.StateUser == Enums.StateUser.Active);
-            var usersList = _mapper.Map<List<User>>(usersCursor.ToList());
-
-            return usersList.Count == 0
-                    ? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList),
-                        $"There aren't users available with this inscription ID: {uidUser}."))
-                    : usersList;
-        }
-
-        public async Task<UpdateUserDTO> UpdateUserAsync(User user)
-        {
-            var userFound = await _usersCollection.Find(u => u.UidUser == user.UidUser).FirstOrDefaultAsync();
+            var userFound = await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync();
             user.SetUserID(userFound.UserID);
+            user.SetUidUser(uidUser);
             var userToUpdate = _mapper.Map<UserMongo>(user);
 
             Guard.Against.Null(userToUpdate, nameof(userToUpdate));
             Guard.Against.NullOrEmpty(userToUpdate.UidUser, nameof(userToUpdate.UidUser));
             Guard.Against.NullOrEmpty(userToUpdate.UserName, nameof(userToUpdate.UserName));
             Guard.Against.NullOrEmpty(userToUpdate.Email, nameof(userToUpdate.Email));
+            Guard.Against.OutOfRange(userToUpdate.EfficiencyRate, nameof(userToUpdate.EfficiencyRate), 0, 100);
+            Guard.Against.Negative(userToUpdate.TasksCompleted, nameof(userToUpdate.TasksCompleted));
             Guard.Against.EnumOutOfRange(userToUpdate.Role, nameof(userToUpdate.Role));
             Guard.Against.EnumOutOfRange(userToUpdate.StateUser, nameof(userToUpdate.StateUser));
 
@@ -93,8 +86,8 @@ namespace Users.Infrastructure.Repositories
 
             return userUpdated == null
                     ? _mapper.Map<UpdateUserDTO>(Guard.Against.Null(userUpdated, nameof(userUpdated),
-                            $"There isn't an user available with this uidUser: {user.UidUser}."))
-                    : _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == user.UidUser).FirstOrDefaultAsync());
+                            $"There isn't an user available with this uidUser: {uidUser}."))
+                    : _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
         }
     }
 }

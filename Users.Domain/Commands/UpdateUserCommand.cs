@@ -4,7 +4,6 @@ namespace Users.Domain.Commands
 {
     public class UpdateUserCommand
     {
-        public string UidUser { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public decimal EfficiencyRate { get; set; }

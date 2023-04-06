@@ -25,9 +25,9 @@ namespace Users.Business.UseCases.Commands
             return await _userCommandRepository.DeleteUserAsync(uidUser);
         }
 
-        public async Task<UpdateUserDTO> UpdateUserAsync(User user)
+        public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, User user)
         {
-            return await _userCommandRepository.UpdateUserAsync(user);
+            return await _userCommandRepository.UpdateUserAsync(uidUser, user);
         }
     }
 }

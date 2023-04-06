@@ -29,9 +29,9 @@ namespace Users.API.Controllers
         }
 
         [HttpPut]
-        public async Task<UpdateUserDTO> UpdateUserAsync([FromBody] UpdateUserCommand updateUser)
+        public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, [FromBody] UpdateUserCommand updateUser)
         {
-            return await _userCommandUseCase.UpdateUserAsync(_mapper.Map<User>(updateUser));
+            return await _userCommandUseCase.UpdateUserAsync(uidUser, _mapper.Map<User>(updateUser));
         }
 
         [HttpDelete("ID")]
@@ -44,12 +44,6 @@ namespace Users.API.Controllers
         public async Task<User> GetUserByIdAsync(string uidUser)
         {
             return await _userQueryUseCase.GetUserByIdAsync(uidUser);
-        }
-
-        [HttpGet("IncriptionID")]
-        public async Task<List<User>> GetUsersByIncriptionIdAsync(string uidUser)
-        {
-            return await _userQueryUseCase.GetUsersByIncriptionIdAsync(uidUser);
         }
     }
 }

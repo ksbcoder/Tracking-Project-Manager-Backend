@@ -17,10 +17,5 @@ namespace Users.Business.UseCases.Queries
         {
             return await _userQueryRepository.GetUserByIdAsync(uidUser);
         }
-
-        public async Task<List<User>> GetUsersByIncriptionIdAsync(string uidUser)
-        {
-            return await _userQueryRepository.GetUsersByIncriptionIdAsync(uidUser);
-        }
     }
 }
