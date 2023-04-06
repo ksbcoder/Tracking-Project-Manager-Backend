@@ -1,0 +1,21 @@
+name: myapp
+build_command: dotnet build
+start_command: dotnet run --project Users.API.csproj
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dbKevin
+      MONGO_INITDB_ROOT_PASSWORD: DBKevin23
+      MONGO_INITDB_DATABASE: TrackingProjectManager
+  myapp:
+    build_command: dotnet build
+    start_command: dotnet run --project Users.API.csproj
+    env:
+      CONNECTION_STRING: mongodb://dbKevin:DBKevin23@mongodb:27017/TrackingProjectManager
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongodb
