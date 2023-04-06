@@ -2,8 +2,10 @@ using AutoMapper.Data;
 using Users.API.AutoMapper;
 using Users.API.Middlewares;
 using Users.Business.Gateway;
-using Users.Business.Gateway.Repositories;
-using Users.Business.UseCases;
+using Users.Business.Gateway.Repositories.Commands;
+using Users.Business.Gateway.Repositories.Queries;
+using Users.Business.UseCases.Commands;
+using Users.Business.UseCases.Queries;
 using Users.Infrastructure;
 using Users.Infrastructure.Interfaces;
 using Users.Infrastructure.Repositories;
@@ -18,8 +20,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(config => config.AddDataReaderMapping(), typeof(ConfigurationProfile));
 
-builder.Services.AddScoped<IUserUseCase, UserUseCase>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserQueryUseCase, UserQueryUseCase>();
+builder.Services.AddScoped<IUserCommandUseCase, UserCommandUseCase>();
+builder.Services.AddScoped<IUserQueryRepository, UserRepository>();
+builder.Services.AddScoped<IUserCommandRepository, UserRepository>();
 
 builder.Services.AddSingleton<IContext>(provider => new Context(builder.Configuration.GetConnectionString("urlConnection"), "TrackingProjectManager"));
 

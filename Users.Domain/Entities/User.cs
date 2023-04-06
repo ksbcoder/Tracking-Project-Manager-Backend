@@ -9,6 +9,7 @@ namespace Users.Domain.Entities
         public string UserName { get; private set; }
         public string Email { get; private set; }
         public decimal EfficiencyRate { get; private set; }
+        public int TasksCompleted { get; private set; }
         public Enums.Roles Role { get; private set; }
         public Enums.StateUser StateUser { get; private set; }
 
@@ -16,9 +17,16 @@ namespace Users.Domain.Entities
 
         public static User SetDetailsUserEntity(User user)
         {
-            user.EfficiencyRate = 0;
+            user.EfficiencyRate = 100;
+            user.TasksCompleted = 0;
             user.StateUser = Enums.StateUser.Active;
 
+            return user;
+        }
+
+        public static User AddTaskCompleted(User user)
+        {
+            user.SetTasksCompleted(user.TasksCompleted += 1);
             return user;
         }
 
@@ -42,6 +50,10 @@ namespace Users.Domain.Entities
         public void SetEfficiencyRate(decimal newEfficiencyRate)
         {
             EfficiencyRate = newEfficiencyRate;
+        }
+        public void SetTasksCompleted(int newTasksCompleted)
+        {
+            TasksCompleted = newTasksCompleted;
         }
         public void SetRole(Enums.Roles newRole)
         {

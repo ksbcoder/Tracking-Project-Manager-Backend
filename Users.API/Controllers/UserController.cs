@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Users.Business.Gateway;
 using Users.Domain.Commands;
+using Users.Domain.DTO;
 using Users.Domain.Entities;
 
 namespace Users.API.Controllers
@@ -10,43 +11,45 @@ namespace Users.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserUseCase _userUseCase;
+        private readonly IUserQueryUseCase _userQueryUseCase;
+        private readonly IUserCommandUseCase _userCommandUseCase;
         private readonly IMapper _mapper;
 
-        public UserController(IUserUseCase userUseCase, IMapper mapper)
+        public UserController(IUserQueryUseCase userUseCase, IUserCommandUseCase userCommandUseCase, IMapper mapper)
         {
-            _userUseCase = userUseCase;
+            _userQueryUseCase = userUseCase;
+            _userCommandUseCase = userCommandUseCase;
             _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<NewUser> CreateUserAsync([FromBody] NewUser newUser)
+        public async Task<NewUserDTO> CreateUserAsync([FromBody] NewUserCommand newUser)
         {
-            return await _userUseCase.CreateUserAsync(_mapper.Map<User>(newUser));
+            return await _userCommandUseCase.CreateUserAsync(_mapper.Map<User>(newUser));
         }
 
         [HttpPut]
-        public async Task<User> UpdateUserAsync([FromBody] NewUser newUser)
+        public async Task<UpdateUserDTO> UpdateUserAsync([FromBody] UpdateUserCommand updateUser)
         {
-            return await _userUseCase.UpdateUserAsync(_mapper.Map<User>(newUser));
+            return await _userCommandUseCase.UpdateUserAsync(_mapper.Map<User>(updateUser));
         }
 
         [HttpDelete("ID")]
-        public async Task<User> DeleteUserAsync(string uidUserd)
+        public async Task<UpdateUserDTO> DeleteUserAsync(string uidUserd)
         {
-            return await _userUseCase.DeleteUserAsync(uidUserd);
+            return await _userCommandUseCase.DeleteUserAsync(uidUserd);
         }
 
         [HttpGet("ID")]
         public async Task<User> GetUserByIdAsync(string uidUser)
         {
-            return await _userUseCase.GetUserByIdAsync(uidUser);
+            return await _userQueryUseCase.GetUserByIdAsync(uidUser);
         }
 
         [HttpGet("IncriptionID")]
         public async Task<List<User>> GetUsersByIncriptionIdAsync(string uidUser)
         {
-            return await _userUseCase.GetUsersByIncriptionIdAsync(uidUser);
+            return await _userQueryUseCase.GetUsersByIncriptionIdAsync(uidUser);
         }
     }
 }

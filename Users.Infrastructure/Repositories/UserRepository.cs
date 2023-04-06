@@ -1,16 +1,17 @@
 ﻿using Ardalis.GuardClauses;
 using AutoMapper;
 using MongoDB.Driver;
-using Users.Business.Gateway.Repositories;
-using Users.Domain.Commands;
+using Users.Business.Gateway.Repositories.Commands;
+using Users.Business.Gateway.Repositories.Queries;
 using Users.Domain.Common;
+using Users.Domain.DTO;
 using Users.Domain.Entities;
 using Users.Infrastructure.Entities;
 using Users.Infrastructure.Interfaces;
 
 namespace Users.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserQueryRepository, IUserCommandRepository
     {
         private readonly IMongoCollection<UserMongo> _usersCollection;
         private readonly IMapper _mapper;
@@ -21,7 +22,7 @@ namespace Users.Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public async Task<NewUser> CreateUserAsync(User user)
+        public async Task<NewUserDTO> CreateUserAsync(User user)
         {
             User.SetDetailsUserEntity(user);
             var userToCreate = _mapper.Map<UserMongo>(user);
@@ -34,10 +35,10 @@ namespace Users.Infrastructure.Repositories
             Guard.Against.EnumOutOfRange(userToCreate.StateUser, nameof(userToCreate.StateUser));
 
             await _usersCollection.InsertOneAsync(userToCreate);
-            return _mapper.Map<NewUser>(userToCreate);
+            return _mapper.Map<NewUserDTO>(userToCreate);
         }
 
-        public async Task<User> DeleteUserAsync(string uidUser)
+        public async Task<UpdateUserDTO> DeleteUserAsync(string uidUser)
         {
             var userToDelete = await _usersCollection.Find(u => u.UidUser == uidUser
                     && u.StateUser == Enums.StateUser.Active
@@ -49,7 +50,7 @@ namespace Users.Infrastructure.Repositories
                 userToDelete.SetStateUser(Enums.StateUser.Eliminated);
                 await _usersCollection.FindOneAndReplaceAsync(u => u.UidUser == uidUser, userToDelete);
             }
-            return _mapper.Map<User>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
+            return _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
         }
 
         public async Task<User> GetUserByIdAsync(string uidUser)
@@ -73,7 +74,7 @@ namespace Users.Infrastructure.Repositories
                     : usersList;
         }
 
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task<UpdateUserDTO> UpdateUserAsync(User user)
         {
             var userFound = await _usersCollection.Find(u => u.UidUser == user.UidUser).FirstOrDefaultAsync();
             user.SetUserID(userFound.UserID);
@@ -91,9 +92,9 @@ namespace Users.Infrastructure.Repositories
                                || u.StateUser == Enums.StateUser.Inactive, userToUpdate);
 
             return userUpdated == null
-                    ? _mapper.Map<User>(Guard.Against.Null(userUpdated, nameof(userUpdated),
+                    ? _mapper.Map<UpdateUserDTO>(Guard.Against.Null(userUpdated, nameof(userUpdated),
                             $"There isn't an user available with this uidUser: {user.UidUser}."))
-                    : _mapper.Map<User>(await _usersCollection.Find(u => u.UidUser == user.UidUser).FirstOrDefaultAsync());
+                    : _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == user.UidUser).FirstOrDefaultAsync());
         }
     }
 }

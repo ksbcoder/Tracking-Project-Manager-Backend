@@ -13,6 +13,7 @@ namespace Users.Infrastructure.Entities
         public string UserName { get; private set; }
         public string Email { get; private set; }
         public decimal EfficiencyRate { get; private set; }
+        public int TasksCompleted { get; private set; }
         public Enums.Roles Role { get; private set; }
         public Enums.StateUser StateUser { get; private set; }
 
@@ -36,6 +37,10 @@ namespace Users.Infrastructure.Entities
         public void SetEfficiencyRate(decimal newEfficiencyRate)
         {
             EfficiencyRate = newEfficiencyRate;
+        }
+        public void SetTasksCompleted(int newTasksCompleted)
+        {
+            TasksCompleted = newTasksCompleted;
         }
         public void SetRole(Enums.Roles newRole)
         {
