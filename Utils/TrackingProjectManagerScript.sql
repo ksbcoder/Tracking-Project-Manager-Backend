@@ -1,0 +1,48 @@
+CREATE TABLE Projects (
+    ProjectID UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY,
+    LeaderID VARCHAR(40) NOT NULL,
+    Name VARCHAR(50) NOT NULL,
+    Description VARCHAR(150) NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    OpenDate DATETIME,
+    DeadLine DATETIME,
+    CompletedAt DATETIME,
+    EfficiencyRate DECIMAL NOT NULL,
+    Phase INT,
+    StateProject INT NOT NULL
+);
+
+CREATE TABLE Inscriptions (
+    InscriptionID UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY,
+    ProjectID UNIQUEIDENTIFIER NOT NULL,
+    UidUser VARCHAR(40) NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    ResponsedAt DATETIME NOT NULL,
+    StateInscription INT NOT NULL,
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE
+);
+
+CREATE TABLE Tasks (
+    TaskID INT IDENTITY NOT NULL PRIMARY KEY,
+    ProjectID UNIQUEIDENTIFIER NOT NULL,
+    Description VARCHAR(150) NOT NULL,
+    CreatedBy VARCHAR(40) NOT NULL,
+    AssignedTo VARCHAR(40),
+    CreatedAt DATETIME NOT NULL,
+    AssignedAt DATETIME,
+    DeadLine DATETIME,
+    CompletedAt DATETIME,
+    Priority INT NOT NULL,
+    StateTask INT NOT NULL,
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE
+);
+
+CREATE TABLE Comments (
+    CommentID INT IDENTITY NOT NULL PRIMARY KEY,
+    UidUser VARCHAR(40) NOT NULL,
+    ProjectID UNIQUEIDENTIFIER NOT NULL,
+    Description VARCHAR(150) NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    StateComment INT NOT NULL,
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE
+);

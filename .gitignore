@@ -8,6 +8,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+Users.API/appsettings.Development.json
+Users.API/appsettings.json
+
 # User-specific files
 *.rsuser
 *.suo
