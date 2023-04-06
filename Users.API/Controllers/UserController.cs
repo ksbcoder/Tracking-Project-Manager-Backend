@@ -28,7 +28,7 @@ namespace Users.API.Controllers
             return await _userCommandUseCase.CreateUserAsync(_mapper.Map<User>(newUser));
         }
 
-        [HttpPut]
+        [HttpPut("ID")]
         public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, [FromBody] UpdateUserCommand updateUser)
         {
             return await _userCommandUseCase.UpdateUserAsync(uidUser, _mapper.Map<User>(updateUser));

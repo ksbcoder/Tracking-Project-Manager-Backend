@@ -46,12 +46,12 @@ namespace Users.Infrastructure.Repositories
                     && u.StateUser == Enums.StateUser.Active
                     || u.StateUser == Enums.StateUser.Inactive).FirstOrDefaultAsync();
 
-            if (Guard.Against.Null(userToDelete, nameof(userToDelete),
-                    $"There isn't an user available with this uidUser: {uidUser}.") != null)
-            {
-                userToDelete.SetStateUser(Enums.StateUser.Eliminated);
-                await _usersCollection.FindOneAndReplaceAsync(u => u.UidUser == uidUser, userToDelete);
-            }
+            Guard.Against.Null(userToDelete, nameof(userToDelete),
+                    $"There isn't an user available with this uidUser: {uidUser}.");
+
+            userToDelete.SetStateUser(Enums.StateUser.Eliminated);
+            await _usersCollection.FindOneAndReplaceAsync(u => u.UidUser == uidUser, userToDelete);
+
             return _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
         }
 
@@ -67,7 +67,7 @@ namespace Users.Infrastructure.Repositories
         public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, User user)
         {
             var userFound = await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync();
-            Guard.Against.Null(userFound, nameof(userFound));
+            Guard.Against.Null(userFound, nameof(userFound), $"There isn't an user available with this uidUser: {uidUser}.");
 
             user.SetUserID(userFound.UserID);
             user.SetUidUser(uidUser);
