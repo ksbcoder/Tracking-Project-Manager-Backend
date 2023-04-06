@@ -67,6 +67,8 @@ namespace Users.Infrastructure.Repositories
         public async Task<UpdateUserDTO> UpdateUserAsync(string uidUser, User user)
         {
             var userFound = await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync();
+            Guard.Against.Null(userFound, nameof(userFound));
+
             user.SetUserID(userFound.UserID);
             user.SetUidUser(uidUser);
             var userToUpdate = _mapper.Map<UserMongo>(user);
