@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Projects.Business.Gateway;
-using Projects.Domain.Commands;
-using Projects.Domain.DTO;
+using Projects.Domain.Commands.Project;
+using Projects.Domain.DTO.Project;
 using Projects.Domain.Entities;
 
 namespace Projects.API.Controllers

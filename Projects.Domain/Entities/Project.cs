@@ -18,21 +18,6 @@ namespace Projects.Domain.Entities
 
         #region constructors
         public Project() { }
-
-        public Project(Project project)
-        {
-            ProjectID = Guid.NewGuid();
-            LeaderID = project.LeaderID;
-            Name = project.Name;
-            Description = project.Description;
-            CreatedAt = project.CreatedAt;
-            OpenDate = project.OpenDate;
-            DeadLine = project.DeadLine;
-            CompletedAt = project.CompletedAt;
-            EfficiencyRate = project.EfficiencyRate;
-            Phase = project.Phase;
-            StateProject = project.StateProject;
-        }
         #endregion
 
         #region methods

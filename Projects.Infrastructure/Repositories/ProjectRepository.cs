@@ -3,7 +3,7 @@ using AutoMapper;
 using Dapper;
 using Projects.Business.Gateway.Repositories;
 using Projects.Domain.Common;
-using Projects.Domain.DTO;
+using Projects.Domain.DTO.Project;
 using Projects.Domain.Entities;
 using Projects.Domain.Entities.Handlers;
 using Projects.Infrastructure.Gateway;
@@ -66,7 +66,6 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.OutOfSQLDateRange(project.CreatedAt, nameof(project.CreatedAt));
             Guard.Against.OutOfRange(project.EfficiencyRate, nameof(project.EfficiencyRate), 0, 100);
             Guard.Against.EnumOutOfRange(project.StateProject, nameof(project.StateProject));
-
 
             string query = $"INSERT INTO {_tableNameProjects} (LeaderID, Name, Description, CreatedAt, OpenDate, DeadLine, " +
                             $"CompletedAt, EfficiencyRate, Phase, StateProject) " +
@@ -175,12 +174,14 @@ namespace Projects.Infrastructure.Repositories
 
             var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
                                 where p.ProjectID == Guid.Parse(idProject) && p.StateProject != Enums.StateProject.Deleted
+                                        && p.Phase == Enums.Phase.Started
                                 select p)
                                 .SingleOrDefault();
 
             var projectToUpdate = projectFound != null ? ProjectHandler.SetNewAplicableValuesToProjectEntity(projectFound, project)
                                                         : Guard.Against.Null(projectFound, nameof(projectFound),
-                                                            $"There is no a project available with this ID: {idProject}.");
+                                                            $"There is no a project available with this ID: {idProject} " +
+                                                            $"or it doesn't open yet.");
 
             Guard.Against.Null(projectToUpdate, nameof(projectToUpdate));
             Guard.Against.NullOrEmpty(projectToUpdate.ProjectID, nameof(projectToUpdate.ProjectID));

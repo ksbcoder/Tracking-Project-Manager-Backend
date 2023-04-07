@@ -1,4 +1,4 @@
-﻿namespace Projects.Domain.Commands
+﻿namespace Projects.Domain.Commands.Project
 {
     public class OpenProjectCommand
     {

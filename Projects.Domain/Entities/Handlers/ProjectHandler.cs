@@ -8,15 +8,15 @@ namespace Projects.Domain.Entities.Handlers
         {
             oldProject.SetProjectID(oldProject.ProjectID);
             oldProject.SetCreatedAt(oldProject.CreatedAt);
+            oldProject.SetOpenDate(oldProject.OpenDate);
+            oldProject.SetCompletedAt(oldProject.CompletedAt);
+            oldProject.SetEfficiencyRate(oldProject.EfficiencyRate);
+            oldProject.SetPhase(oldProject.Phase);
 
             oldProject.SetLeaderID(newProject.LeaderID);
             oldProject.SetName(newProject.Name);
             oldProject.SetDescription(newProject.Description);
-            oldProject.SetOpenDate(newProject.OpenDate);
             oldProject.SetDeadLine(newProject.DeadLine);
-            oldProject.SetCompletedAt(newProject.CompletedAt);
-            oldProject.SetEfficiencyRate(newProject.EfficiencyRate);
-            oldProject.SetPhase(newProject.Phase);
             oldProject.SetStateProject(newProject.StateProject);
             return oldProject;
         }

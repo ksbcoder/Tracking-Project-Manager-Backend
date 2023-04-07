@@ -1,8 +1,7 @@
-﻿using Castle.Core.Resource;
-using Moq;
+﻿using Moq;
 using Projects.Business.Gateway.Repositories;
 using Projects.Domain.Common;
-using Projects.Domain.DTO;
+using Projects.Domain.DTO.Project;
 using Projects.Domain.Entities;
 
 namespace Projects.Tests.ProjectTests

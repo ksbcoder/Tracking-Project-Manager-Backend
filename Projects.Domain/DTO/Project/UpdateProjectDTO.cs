@@ -1,6 +1,6 @@
 ﻿using Projects.Domain.Common;
 
-namespace Projects.Domain.DTO
+namespace Projects.Domain.DTO.Project
 {
     public class UpdateProjectDTO
     {

@@ -1,6 +1,6 @@
 ﻿using Projects.Business.Gateway;
 using Projects.Business.Gateway.Repositories;
-using Projects.Domain.DTO;
+using Projects.Domain.DTO.Project;
 using Projects.Domain.Entities;
 
 namespace Projects.Business.UseCases
