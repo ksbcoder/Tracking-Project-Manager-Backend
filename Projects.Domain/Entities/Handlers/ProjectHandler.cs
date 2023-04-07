@@ -38,7 +38,8 @@ namespace Projects.Domain.Entities.Handlers
 
         public static decimal CalculateEfficiencyRate(int expectedDays, int realDays)
         {
-            decimal efficiencyRate = (expectedDays / realDays) * 100;
+            decimal efficiencyRate = ((decimal)expectedDays / realDays) * 100;
+            efficiencyRate = Math.Round(efficiencyRate, 2);
             efficiencyRate = efficiencyRate < 0 ? 0 : efficiencyRate;
             efficiencyRate = efficiencyRate > 100 ? 100 : efficiencyRate;
             return efficiencyRate;
