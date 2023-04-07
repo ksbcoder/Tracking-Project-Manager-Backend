@@ -38,8 +38,13 @@ namespace Projects.Infrastructure.Repositories
 
             projectFound.SetPhase(Enums.Phase.Completed);
             projectFound.SetStateProject(Enums.StateProject.Inactive);
+            projectFound.SetCompletedAt(DateTime.Now);
+            int expectedDays = ProjectHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.DeadLine);
+            int realDays = ProjectHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.CompletedAt);
+            projectFound.SetEfficiencyRate(ProjectHandler.CalculateEfficiencyRate(expectedDays, realDays));
 
-            string query = $"UPDATE {_tableNameProjects} SET Phase = @Phase, StateProject = @StateProject " +
+            string query = $"UPDATE {_tableNameProjects} SET Phase = @Phase, StateProject = @StateProject, " +
+                            $"CompletedAt = @CompletedAt " +
                             $"WHERE ProjectID = @ProjectID";
             var result = await connection.ExecuteAsync(query, projectFound);
             connection.Close();

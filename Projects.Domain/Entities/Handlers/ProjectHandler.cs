@@ -28,5 +28,20 @@ namespace Projects.Domain.Entities.Handlers
             oldProject.SetPhase(Enums.Phase.Started);
             return oldProject;
         }
+
+        public static int CalculateDaysFromTo(DateTime? dateFrom, DateTime? dateTo)
+        {
+            TimeSpan dateDifference = (TimeSpan)(dateTo - dateFrom);
+            int days = dateDifference.Days <= 0 ? 1 : dateDifference.Days;
+            return days;
+        }
+
+        public static decimal CalculateEfficiencyRate(int expectedDays, int realDays)
+        {
+            decimal efficiencyRate = (expectedDays / realDays) * 100;
+            efficiencyRate = efficiencyRate < 0 ? 0 : efficiencyRate;
+            efficiencyRate = efficiencyRate > 100 ? 100 : efficiencyRate;
+            return efficiencyRate;
+        }
     }
 }
