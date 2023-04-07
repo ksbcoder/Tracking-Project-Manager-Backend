@@ -12,6 +12,12 @@ namespace Projects.Business.UseCases
         {
             _projectRepository = projectRepository;
         }
+
+        public async Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
+        {
+            return await _projectRepository.CompleteProjectAsync(idProject);
+        }
+
         public async Task<NewProjectDTO> CreateProjectAsync(Project project)
         {
             return await _projectRepository.CreateProjectAsync(project);
@@ -22,9 +28,24 @@ namespace Projects.Business.UseCases
             return await _projectRepository.DeleteProjectAsync(idProject);
         }
 
+        public async Task<List<Project>> GetActiveProjectsAsync()
+        {
+            return await _projectRepository.GetActiveProjectsAsync();
+        }
+
+        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        {
+            return await _projectRepository.GetAllNoDeletedProjectsAsync();
+
+        }
         public Task<Project> GetProjectByIdAsync(string idProject)
         {
             return _projectRepository.GetProjectByIdAsync(idProject);
+        }
+
+        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)
+        {
+            return await _projectRepository.OpenProjectAsync(idProject, project);
         }
 
         public async Task<UpdateProjectDTO> UpdateProjectAsync(string idProject, Project project)

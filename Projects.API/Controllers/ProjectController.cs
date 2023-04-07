@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projects.Business.Gateway;
 using Projects.Domain.Commands;
@@ -33,6 +32,18 @@ namespace Projects.API.Controllers
             return await _projectUseCase.UpdateProjectAsync(idProject, _mapper.Map<Project>(updateProjectCommand));
         }
 
+        [HttpPut("OpenProject/ID")]
+        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, [FromBody] OpenProjectCommand openProjectCommand)
+        {
+            return await _projectUseCase.OpenProjectAsync(idProject, _mapper.Map<Project>(openProjectCommand));
+        }
+
+        //[HttpPut("CompleteProject/ID")]
+        //public async Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
+        //{
+        //    return await _projectUseCase.CompleteProjectAsync(idProject);
+        //}
+
         [HttpDelete("ID")]
         public async Task<UpdateProjectDTO> DeleteProjectAsync(string idProject)
         {
@@ -43,6 +54,18 @@ namespace Projects.API.Controllers
         public async Task<Project> GetProjectByIdAsync(string idProject)
         {
             return await _projectUseCase.GetProjectByIdAsync(idProject);
+        }
+
+        [HttpGet("ActiveOnly")]
+        public async Task<List<Project>> GetActiveProjectsAsync()
+        {
+            return await _projectUseCase.GetActiveProjectsAsync();
+        }
+
+        [HttpGet("AllNoDeleted")]
+        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        {
+            return await _projectUseCase.GetAllNoDeletedProjectsAsync();
         }
     }
 }

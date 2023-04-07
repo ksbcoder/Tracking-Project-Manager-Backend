@@ -43,23 +43,6 @@ namespace Projects.Domain.Entities
             project.StateProject = Enums.StateProject.Active;
             return project;
         }
-
-        public static Project SetNewAplicableValuesToProjectEntity(Project oldProject, Project newProject)
-        {
-            oldProject.ProjectID = oldProject.ProjectID;
-            oldProject.CreatedAt = oldProject.CreatedAt;
-
-            oldProject.LeaderID = newProject.LeaderID;
-            oldProject.Name = newProject.Name;
-            oldProject.Description = newProject.Description;
-            oldProject.OpenDate = newProject.OpenDate;
-            oldProject.DeadLine = newProject.DeadLine;
-            oldProject.CompletedAt = newProject.CompletedAt;
-            oldProject.EfficiencyRate = newProject.EfficiencyRate;
-            oldProject.Phase = newProject.Phase;
-            oldProject.StateProject = newProject.StateProject;
-            return oldProject;
-        }
         #endregion
 
         #region setters
@@ -83,15 +66,15 @@ namespace Projects.Domain.Entities
         {
             CreatedAt = createdAt;
         }
-        public void SetOpenDate(DateTime openDate)
+        public void SetOpenDate(DateTime? openDate)
         {
             OpenDate = openDate;
         }
-        public void SetDeadLine(DateTime deadLine)
+        public void SetDeadLine(DateTime? deadLine)
         {
             DeadLine = deadLine;
         }
-        public void SetCompletedAt(DateTime completedAt)
+        public void SetCompletedAt(DateTime? completedAt)
         {
             CompletedAt = completedAt;
         }
@@ -99,7 +82,7 @@ namespace Projects.Domain.Entities
         {
             EfficiencyRate = efficiencyRate;
         }
-        public void SetPhase(Enums.Phase phase)
+        public void SetPhase(Enums.Phase? phase)
         {
             Phase = phase;
         }

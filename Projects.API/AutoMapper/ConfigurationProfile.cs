@@ -14,7 +14,9 @@ namespace Projects.API.AutoMapper
 
             CreateMap<UpdateProjectCommand, Project>().ReverseMap();
             CreateMap<Project, UpdateProjectDTO>().ReverseMap();
-            //CreateMap<Project, ProjectMongo>().ReverseMap();
+
+            //use cases
+            CreateMap<OpenProjectCommand, Project>().ReverseMap();
         }
     }
 }

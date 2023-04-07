@@ -5,7 +5,9 @@ using Projects.Business.Gateway.Repositories;
 using Projects.Domain.Common;
 using Projects.Domain.DTO;
 using Projects.Domain.Entities;
+using Projects.Domain.Entities.Handlers;
 using Projects.Infrastructure.Gateway;
+using System.Data;
 
 namespace Projects.Infrastructure.Repositories
 {
@@ -19,6 +21,11 @@ namespace Projects.Infrastructure.Repositories
         {
             _dbConnectionBuilder = dbConnectionBuilder;
             _mapper = mapper;
+        }
+
+        public Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<NewProjectDTO> CreateProjectAsync(Project project)
@@ -55,6 +62,7 @@ namespace Projects.Infrastructure.Repositories
                                 where p.ProjectID == Guid.Parse(idProject) && p.StateProject != Enums.StateProject.Deleted
                                 select p)
                                 .SingleOrDefault();
+
             Guard.Against.Null(projectFound, nameof(projectFound), $"There is no a project available with this ID: {idProject}.");
 
             projectFound.SetStateProject(Enums.StateProject.Deleted);
@@ -66,6 +74,34 @@ namespace Projects.Infrastructure.Repositories
             return result == 0 ? _mapper.Map<UpdateProjectDTO>(Guard.Against.Zero(result, nameof(result),
                                      $"The record has not been modified. Rows affected ({result})"))
                                 : _mapper.Map<UpdateProjectDTO>(projectFound);
+        }
+
+        public async Task<List<Project>> GetActiveProjectsAsync()
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                 where p.StateProject == Enums.StateProject.Active
+                                 select p)
+                                 .ToList();
+            connection.Close();
+            return projectsFound == null ? _mapper.Map<List<Project>>(Guard.Against.Null(projectsFound, nameof(projectsFound),
+                                            $"There is no a project available with this ID: {projectsFound}."))
+                                         : _mapper.Map<List<Project>>(projectsFound);
+        }
+
+        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                 where p.StateProject != Enums.StateProject.Deleted
+                                 select p)
+                                 .ToList();
+            connection.Close();
+            return projectsFound == null ? _mapper.Map<List<Project>>(Guard.Against.Null(projectsFound, nameof(projectsFound),
+                                            $"There is no a project available with this ID: {projectsFound}."))
+                                         : _mapper.Map<List<Project>>(projectsFound);
         }
 
         public async Task<Project> GetProjectByIdAsync(string idProject)
@@ -82,6 +118,31 @@ namespace Projects.Infrastructure.Repositories
                                         : _mapper.Map<Project>(projectFound);
         }
 
+        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                where p.ProjectID == Guid.Parse(idProject) 
+                                        && p.StateProject == Enums.StateProject.Active
+                                        && p.OpenDate == null && p.DeadLine == null && p.Phase == null
+                                select p)
+                                .SingleOrDefault();
+
+            Guard.Against.Null(projectFound, nameof(projectFound), 
+                $"There is no a project available or was open already. ID: {idProject}.");
+
+            ProjectHandler.SetDetailsWhenOpenProject(projectFound, project);
+            string query = $"UPDATE {_tableNameProjects} SET OpenDate = @OpenDate, DeadLine = @DeadLine, Phase = @Phase " +
+                            $"WHERE ProjectID = @ProjectID";
+            var result = await connection.ExecuteAsync(query, projectFound);
+            connection.Close() ;
+
+            return result == 0 ? _mapper.Map<UpdateProjectDTO>(Guard.Against.Zero(result, nameof(result),
+                                     $"The record has not been modified. Rows affected ({result})"))
+                                : _mapper.Map<UpdateProjectDTO>(projectFound);
+        }
+
         public async Task<UpdateProjectDTO> UpdateProjectAsync(string idProject, Project project)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
@@ -91,7 +152,7 @@ namespace Projects.Infrastructure.Repositories
                                 select p)
                                 .SingleOrDefault();
 
-            var projectToUpdate = projectFound != null ? Project.SetNewAplicableValuesToProjectEntity(projectFound, project)
+            var projectToUpdate = projectFound != null ? ProjectHandler.SetNewAplicableValuesToProjectEntity(projectFound, project)
                                                         : Guard.Against.Null(projectFound, nameof(projectFound),
                                                             $"There is no a project available with this ID: {idProject}.");
 

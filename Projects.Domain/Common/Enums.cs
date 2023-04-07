@@ -6,14 +6,12 @@
         {
             Active,
             Inactive,
-            Canceled,
             Deleted
         }
 
         public enum Phase
         {
             Started,
-            Process,
             Completed
         }
 

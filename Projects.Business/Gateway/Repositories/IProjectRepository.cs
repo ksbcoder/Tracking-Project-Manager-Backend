@@ -9,5 +9,9 @@ namespace Projects.Business.Gateway.Repositories
         Task<UpdateProjectDTO> UpdateProjectAsync(string idProject, Project project);
         Task<UpdateProjectDTO> DeleteProjectAsync(string idProject);
         Task<Project> GetProjectByIdAsync(string idProject);
+        Task<List<Project>> GetActiveProjectsAsync();
+        Task<List<Project>> GetAllNoDeletedProjectsAsync();
+        Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project);
+        Task<UpdateProjectDTO> CompleteProjectAsync(string idProject);
     }
 }
