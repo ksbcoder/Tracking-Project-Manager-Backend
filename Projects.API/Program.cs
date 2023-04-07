@@ -21,6 +21,9 @@ builder.Services.AddAutoMapper(config => config.AddDataReaderMapping(), typeof(C
 builder.Services.AddScoped<IProjectUseCase, ProjectUseCase>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+builder.Services.AddScoped<ITaskUseCase, TaskUseCase>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
 builder.Services.AddTransient<IDbConnectionBuilder>(e =>
 {
     return new DbConnectionBuilder(builder.Configuration.GetConnectionString("urlConnectionSQL"));

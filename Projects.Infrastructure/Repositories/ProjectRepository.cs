@@ -83,10 +83,7 @@ namespace Projects.Infrastructure.Repositories
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
-            var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
-                                where p.ProjectID == Guid.Parse(idProject) && p.StateProject != Enums.StateProject.Deleted
-                                select p)
-                                .SingleOrDefault();
+            var projectFound = await GetProjectByIdAsync(idProject);
 
             Guard.Against.Null(projectFound, nameof(projectFound), $"There is no a project available with this ID: {idProject}.");
 

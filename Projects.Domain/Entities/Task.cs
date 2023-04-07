@@ -4,19 +4,30 @@ namespace Projects.Domain.Entities
 {
     public class Task
     {
-        public int TaskID { get; set; }
-        public Guid ProjectID { get; set; }
-        public string Description { get; set; }
-        public string CreatedBy { get; set; }
-        public string? AssignedTo { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? AssignedAt { get; set; }
-        public DateTime? Deadline { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public Enums.Priority Priority { get; set; }
-        public Enums.StateTask StateTask { get; set; }
+        public int TaskID { get; private set; }
+        public Guid ProjectID { get; private set; }
+        public string Description { get; private set; }
+        public string CreatedBy { get; private set; }
+        public string? AssignedTo { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? AssignedAt { get; private set; }
+        public DateTime DeadLine { get; private set; }
+        public DateTime? CompletedAt { get; private set; }
+        public Enums.Priority Priority { get; private set; }
+        public Enums.StateTask StateTask { get; private set; }
 
+        #region constructors
         public Task() { }
+        #endregion 
+
+        #region methods
+        public static Task SetDetailsTaskEntity(Task task)
+        {
+            task.CreatedAt = DateTime.Now;
+            task.StateTask = Enums.StateTask.Active;
+            return task;
+        }
+        #endregion
 
         #region setters
         public void SetTaskID(int taskID)
@@ -35,7 +46,7 @@ namespace Projects.Domain.Entities
         {
             CreatedBy = createdBy;
         }
-        public void SetAssignedTo(string assignedTo)
+        public void SetAssignedTo(string? assignedTo)
         {
             AssignedTo = assignedTo;
         }
@@ -43,15 +54,15 @@ namespace Projects.Domain.Entities
         {
             CreatedAt = createdAt;
         }
-        public void SetAssignedAt(DateTime assignedAt)
+        public void SetAssignedAt(DateTime? assignedAt)
         {
             AssignedAt = assignedAt;
         }
-        public void SetDeadline(DateTime deadline)
+        public void SetDeadLine(DateTime deadline)
         {
-            Deadline = deadline;
+            DeadLine = deadline;
         }
-        public void SetCompletedAt(DateTime completedAt)
+        public void SetCompletedAt(DateTime? completedAt)
         {
             CompletedAt = completedAt;
         }

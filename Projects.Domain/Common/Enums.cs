@@ -17,16 +17,17 @@
 
         public enum StateTask
         {
+            Active,
             Assigned,
-            Process,
-            Completed
+            Completed,
+            Deleted
         }
 
         public enum Priority
         {
-            High,
+            Low,
             Medium,
-            Low
+            High
         }
 
         public enum StateInscription
