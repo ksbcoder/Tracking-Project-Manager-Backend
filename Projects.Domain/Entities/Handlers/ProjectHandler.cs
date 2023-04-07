@@ -6,7 +6,7 @@ namespace Projects.Domain.Entities.Handlers
     {
         public static Project SetNewAplicableValuesToProjectEntity(Project oldProject, Project newProject)
         {
-            oldProject.SetProjecID(oldProject.ProjectID);
+            oldProject.SetProjectID(oldProject.ProjectID);
             oldProject.SetCreatedAt(oldProject.CreatedAt);
 
             oldProject.SetLeaderID(newProject.LeaderID);

@@ -1,7 +1,6 @@
 ﻿using Moq;
 using Users.Business.Gateway.Repositories.Commands;
 using Users.Business.Gateway.Repositories.Queries;
-using Users.Domain.Commands;
 using Users.Domain.Common;
 using Users.Domain.DTO;
 using Users.Domain.Entities;

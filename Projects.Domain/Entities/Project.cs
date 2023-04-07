@@ -46,7 +46,7 @@ namespace Projects.Domain.Entities
         #endregion
 
         #region setters
-        public void SetProjecID(Guid projecID)
+        public void SetProjectID(Guid projecID)
         {
             ProjectID = projecID;
         }
