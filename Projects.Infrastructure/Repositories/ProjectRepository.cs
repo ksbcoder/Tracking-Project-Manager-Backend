@@ -23,9 +23,30 @@ namespace Projects.Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
+        public async Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
         {
-            throw new NotImplementedException();
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                where p.ProjectID == Guid.Parse(idProject) && p.StateProject == Enums.StateProject.Active
+                                && p.Phase == Enums.Phase.Started
+                                select p)
+                                .SingleOrDefault();
+
+            Guard.Against.Null(projectFound, nameof(projectFound),
+                $"There is no a project available or was stop already. ID: {idProject}.");
+
+            projectFound.SetPhase(Enums.Phase.Completed);
+            projectFound.SetStateProject(Enums.StateProject.Inactive);
+
+            string query = $"UPDATE {_tableNameProjects} SET Phase = @Phase, StateProject = @StateProject " +
+                            $"WHERE ProjectID = @ProjectID";
+            var result = await connection.ExecuteAsync(query, projectFound);
+            connection.Close();
+
+            return result == 0 ? _mapper.Map<UpdateProjectDTO>(Guard.Against.Zero(result, nameof(result),
+                                     $"The record has not been modified. Rows affected ({result})"))
+                                : _mapper.Map<UpdateProjectDTO>(projectFound);
         }
 
         public async Task<NewProjectDTO> CreateProjectAsync(Project project)

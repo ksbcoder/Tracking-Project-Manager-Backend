@@ -38,11 +38,11 @@ namespace Projects.API.Controllers
             return await _projectUseCase.OpenProjectAsync(idProject, _mapper.Map<Project>(openProjectCommand));
         }
 
-        //[HttpPut("CompleteProject/ID")]
-        //public async Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
-        //{
-        //    return await _projectUseCase.CompleteProjectAsync(idProject);
-        //}
+        [HttpPut("CompleteProject/ID")]
+        public async Task<UpdateProjectDTO> CompleteProjectAsync(string idProject)
+        {
+            return await _projectUseCase.CompleteProjectAsync(idProject);
+        }
 
         [HttpDelete("ID")]
         public async Task<UpdateProjectDTO> DeleteProjectAsync(string idProject)

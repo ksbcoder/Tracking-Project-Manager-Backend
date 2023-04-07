@@ -14,6 +14,5 @@ namespace Projects.Business.Gateway
         Task<List<Project>> GetAllNoDeletedProjectsAsync();
         Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project);
         Task<UpdateProjectDTO> CompleteProjectAsync(string idProject);
-
     }
 }
