@@ -4,7 +4,6 @@ namespace Projects.Domain.DTO
 {
     public class NewProjectDTO
     {
-        public Guid ProjectID { get; private set; }
         public string LeaderID { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }

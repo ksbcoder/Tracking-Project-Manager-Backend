@@ -27,7 +27,7 @@ namespace Projects.API.Controllers
             return await _projectUseCase.CreateProjectAsync(_mapper.Map<Project>(newProjectCommand));
         }
 
-        [HttpPut]
+        [HttpPut("ID")]
         public async Task<UpdateProjectDTO> UpdateProjectAsync(string idProject, [FromBody] UpdateProjectCommand updateProjectCommand)
         {
             return await _projectUseCase.UpdateProjectAsync(idProject, _mapper.Map<Project>(updateProjectCommand));

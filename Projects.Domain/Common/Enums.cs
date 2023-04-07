@@ -6,7 +6,8 @@
         {
             Active,
             Inactive,
-            Canceled
+            Canceled,
+            Deleted
         }
 
         public enum Phase
