@@ -34,7 +34,7 @@ namespace Projects.Infrastructure.Repositories
                                 .SingleOrDefault();
 
             Guard.Against.Null(projectFound, nameof(projectFound),
-                $"There is no a project available or was stop already. ID: {idProject}.");
+                $"There is no a project available or was complete already. ID: {idProject}.");
 
             projectFound.SetPhase(Enums.Phase.Completed);
             projectFound.SetStateProject(Enums.StateProject.Inactive);

@@ -2,11 +2,11 @@
 {
     public class TaskHandler
     {
-        public static bool ValidateDeadLineDate(DateTime deadLineTask, Project project)
+        public static bool ValidateWithinTheProjectTimeFrame(DateTime? deadLineTask, Project project)
         {
-            return deadLineTask.Date >= project.OpenDate?.Date
-                    && deadLineTask.Date >= DateTime.Now.Date
-                    && deadLineTask.Date <= project.DeadLine?.Date;
+            return deadLineTask?.Date >= project.OpenDate?.Date
+                    && deadLineTask?.Date >= DateTime.Now.Date
+                    && deadLineTask?.Date <= project.DeadLine?.Date;
         }
 
         public static Task SetNewAplicableValuesToTaskEntity(Task oldTask, Task newTask)

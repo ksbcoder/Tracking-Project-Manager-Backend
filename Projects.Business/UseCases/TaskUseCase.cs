@@ -12,14 +12,14 @@ namespace Projects.Business.UseCases
             _taskRepository = taskRepository;
         }
 
-        public Task<UpdateTaskDTO> AssignTaskAsync(int idTask, string uidUser)
+        public async Task<UpdateTaskDTO> AssignTaskAsync(int idTask, string uidUser)
         {
-            throw new NotImplementedException();
+            return await _taskRepository.AssignTaskAsync(idTask, uidUser);
         }
 
-        public Task<UpdateTaskDTO> CompleteTaskAsync(int idTask)
+        public async Task<UpdateTaskDTO> CompleteTaskAsync(int idTask)
         {
-            throw new NotImplementedException();
+            return await _taskRepository.CompleteTaskAsync(idTask);
         }
 
         public async Task<NewTaskDTO> CreateTaskAsync(Domain.Entities.Task task)

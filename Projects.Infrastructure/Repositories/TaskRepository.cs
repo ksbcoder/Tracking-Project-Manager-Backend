@@ -22,14 +22,93 @@ namespace Projects.Infrastructure.Repositories
             _dbConnectionBuilder = dbConnectionBuilder;
             _mapper = mapper;
         }
-        public Task<UpdateTaskDTO> AssignTaskAsync(int idTask, string uidUser)
+        public async Task<UpdateTaskDTO> AssignTaskAsync(int idTask, string uidUser)
         {
-            throw new NotImplementedException();
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+
+            var taskFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                             where t.TaskID == idTask && t.StateTask == Enums.StateTask.Active
+                             && t.AssignedTo == null && t.AssignedAt == null
+                             select t)
+                             .SingleOrDefault();
+
+            Guard.Against.Null(taskFound, nameof(taskFound),
+                $"There is no a task available or was assign already ID: {idTask}.");
+
+            var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                where p.ProjectID == taskFound.ProjectID
+                                select p)
+                                .SingleOrDefault();
+
+            Guard.Against.Null(projectFound, nameof(projectFound),
+                $"There is no a project available or was complete already. ID: {taskFound.ProjectID}.");
+
+
+            taskFound.SetAssignedTo(uidUser);
+            taskFound.SetAssignedAt(DateTime.Now);
+            taskFound.SetStateTask(Enums.StateTask.Assigned);
+
+            var viableAssignedDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskFound.AssignedAt, projectFound);
+            if (!viableAssignedDate)
+            {
+                Guard.Against.Default(viableAssignedDate, nameof(viableAssignedDate),
+                    $"Assign date: {taskFound.AssignedAt:dd/MM/yyyy} " +
+                    $"is greater than project deadline: {projectFound.DeadLine:dd/MM/yyyy} " +
+                    $"or less than project open date: {projectFound.OpenDate:dd/MM/yyyy}.");
+            }
+
+            string query = $"UPDATE {_tableNameTasks} SET AssignedTo = @AssignedTo, AssignedAt = @AssignedAt, " +
+                            $"StateTask = @StateTask WHERE TaskID = @TaskID";
+            var result = await connection.ExecuteAsync(query, taskFound);
+            connection.Close();
+
+            return result == 0 ? _mapper.Map<UpdateTaskDTO>(Guard.Against.Zero(result, nameof(result),
+                                     $"The record has not been modified. Rows affected ({result})"))
+                                : _mapper.Map<UpdateTaskDTO>(taskFound);
         }
 
-        public Task<UpdateTaskDTO> CompleteTaskAsync(int idTask)
+        public async Task<UpdateTaskDTO> CompleteTaskAsync(int idTask)
         {
-            throw new NotImplementedException();
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+
+            var taskFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                             where t.TaskID == idTask && t.StateTask == Enums.StateTask.Assigned && t.CompletedAt == null
+                             select t)
+                             .SingleOrDefault();
+
+            Guard.Against.Null(taskFound, nameof(taskFound),
+                $"There is no a task available or was complete already ID: {idTask}.");
+
+            var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                where p.ProjectID == taskFound.ProjectID
+                                select p)
+                                .SingleOrDefault();
+
+            Guard.Against.Null(projectFound, nameof(projectFound),
+                $"There is no a project available or was complete already. ID: {taskFound.ProjectID}.");
+
+            taskFound.SetCompletedAt(DateTime.Now);
+            taskFound.SetStateTask(Enums.StateTask.Completed);
+
+            var viableCompletedDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskFound.CompletedAt, projectFound);
+            if (!viableCompletedDate)
+            {
+                Guard.Against.Default(viableCompletedDate, nameof(viableCompletedDate),
+                    $"Task completed date: {taskFound.CompletedAt:dd/MM/yyyy} " +
+                    $"is greater than project deadline: {projectFound.DeadLine:dd/MM/yyyy} " +
+                    $"or less than project open date: {projectFound.OpenDate:dd/MM/yyyy}.");
+            }
+
+            string query = $"UPDATE {_tableNameTasks} SET CompletedAt = @CompletedAt, " +
+                           $"StateTask = @StateTask WHERE TaskID = @TaskID";
+            var result = await connection.ExecuteAsync(query, taskFound);
+            connection.Close();
+
+            return result == 0 ? _mapper.Map<UpdateTaskDTO>(Guard.Against.Zero(result, nameof(result),
+                                    $"The record has not been modified. Rows affected ({result})"))
+                                : _mapper.Map<UpdateTaskDTO>(taskFound);
         }
 
         public async Task<NewTaskDTO> CreateTaskAsync(Domain.Entities.Task task)
@@ -45,7 +124,7 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available with this ID: {task.ProjectID}.");
 
-            var viableDeadlineDate = TaskHandler.ValidateDeadLineDate(task.DeadLine, projectFound);
+            var viableDeadlineDate = TaskHandler.ValidateWithinTheProjectTimeFrame(task.DeadLine, projectFound);
             if (!viableDeadlineDate)
             {
                 Guard.Against.Default(viableDeadlineDate, nameof(viableDeadlineDate),
@@ -128,6 +207,7 @@ namespace Projects.Infrastructure.Repositories
 
             var taskFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
                              where t.TaskID == idTask && t.StateTask == Enums.StateTask.Active
+                             || t.StateTask == Enums.StateTask.Assigned
                              select t)
                              .SingleOrDefault();
 
@@ -145,7 +225,7 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.EnumOutOfRange(taskToUpdate.Priority, nameof(taskToUpdate.Priority));
             Guard.Against.EnumOutOfRange(taskToUpdate.StateTask, nameof(taskToUpdate.StateTask));
 
-            var viableDeadlineDate = TaskHandler.ValidateDeadLineDate(taskToUpdate.DeadLine, projectFound);
+            var viableDeadlineDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskToUpdate.DeadLine, projectFound);
             if (!viableDeadlineDate)
             {
                 Guard.Against.Default(viableDeadlineDate, nameof(viableDeadlineDate),
