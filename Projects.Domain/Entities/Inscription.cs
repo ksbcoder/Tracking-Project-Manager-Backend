@@ -11,7 +11,18 @@ namespace Projects.Domain.Entities
         public DateTime? ResponsedAt { get; private set; }
         public Enums.StateInscription StateInscription { get; private set; }
 
+        #region constructors
         public Inscription() { }
+        #endregion
+
+        #region methods
+        public static Inscription SetDetailsInscriptionEntity(Inscription inscription)
+        {
+            inscription.CreatedAt = DateTime.Now;
+            inscription.StateInscription = Enums.StateInscription.Pending;
+            return inscription;
+        }
+        #endregion
 
         #region setters
         public void SetInscriptionID(Guid inscriptionID)

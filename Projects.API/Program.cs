@@ -24,6 +24,9 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskUseCase, TaskUseCase>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
+builder.Services.AddScoped<IInscriptionUseCase, InscriptionUseCase>();
+builder.Services.AddScoped<IInscriptionRepository, InscriptionRepository>();
+
 builder.Services.AddTransient<IDbConnectionBuilder>(e =>
 {
     return new DbConnectionBuilder(builder.Configuration.GetConnectionString("urlConnectionSQL"));
