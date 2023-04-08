@@ -15,6 +15,7 @@ namespace Projects.Infrastructure.Repositories
     {
         private readonly IDbConnectionBuilder _dbConnectionBuilder;
         private readonly string _tableNameProjects = "Projects";
+        private readonly string _tableNameInscriptions = "Inscriptions";
         private readonly string _tableNameTasks = "Tasks";
         private readonly IMapper _mapper;
 
@@ -26,7 +27,6 @@ namespace Projects.Infrastructure.Repositories
         public async Task<UpdateTaskDTO> AssignTaskAsync(int idTask, string uidUser)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
-
 
             var taskFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
                              where t.TaskID == idTask && t.StateTask == Enums.StateTask.Active
@@ -45,6 +45,15 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available or was complete already. ID: {taskFound.ProjectID}.");
 
+            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
+                                    where i.ProjectID == taskFound.ProjectID && i.UidUser == uidUser
+                                    && i.StateInscription == Enums.StateInscription.Approved
+                                    select i)
+                                    .SingleOrDefault();
+
+            Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
+                $"There is no a inscription available or was denied. " +
+                $"project ID: {taskFound.ProjectID}, uid user: {uidUser}.");
 
             taskFound.SetAssignedTo(uidUser);
             taskFound.SetAssignedAt(DateTime.Now);
@@ -90,6 +99,16 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available or was complete already. ID: {taskFound.ProjectID}.");
 
+            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
+                                    where i.ProjectID == taskFound.ProjectID && i.UidUser == taskFound.AssignedTo
+                                    && i.StateInscription == Enums.StateInscription.Approved
+                                    select i)
+                                    .SingleOrDefault();
+
+            Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
+                $"There is no a inscription available or was denied. " +
+                $"project ID: {taskFound.ProjectID}, uid user: {taskFound.AssignedTo}.");
+
             taskFound.SetCompletedAt(DateTime.Now);
             taskFound.SetStateTask(Enums.StateTask.Completed);
 
@@ -123,7 +142,7 @@ namespace Projects.Infrastructure.Repositories
                                 .SingleOrDefault();
 
             Guard.Against.Null(projectFound, nameof(projectFound),
-                $"There is no a project available with this ID: {task.ProjectID}.");
+                $"There is no a project available or is not opened yet. ID: {task.ProjectID}.");
 
             var viableDeadlineDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(task.DeadLine, projectFound);
             if (!viableDeadlineDate)

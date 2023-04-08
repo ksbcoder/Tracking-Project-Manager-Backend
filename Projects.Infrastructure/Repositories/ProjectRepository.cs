@@ -15,6 +15,7 @@ namespace Projects.Infrastructure.Repositories
     {
         private readonly IDbConnectionBuilder _dbConnectionBuilder;
         private readonly string _tableNameProjects = "Projects";
+        private readonly string _tableNameTasks = "Tasks";
         private readonly IMapper _mapper;
 
         public ProjectRepository(IDbConnectionBuilder dbConnectionBuilder, IMapper mapper)
@@ -35,6 +36,15 @@ namespace Projects.Infrastructure.Repositories
 
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available or was complete already. ID: {idProject}.");
+
+            var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                              where t.ProjectID == projectFound.ProjectID && t.StateTask != Enums.StateTask.Completed
+                              select t)
+                              .ToList();
+
+            _ = tasksFound.Count != 0
+                    ? throw new ArgumentException($"There are incomplete tasks in project with ID: {idProject}.")
+                    : true;
 
             projectFound.SetPhase(Enums.Phase.Completed);
             projectFound.SetStateProject(Enums.StateProject.Inactive);
@@ -107,9 +117,9 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound == null ? _mapper.Map<List<Project>>(Guard.Against.Null(projectsFound, nameof(projectsFound),
-                                            $"There is no a project available with this ID: {projectsFound}."))
-                                         : _mapper.Map<List<Project>>(projectsFound);
+            return projectsFound.Count == 0 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
+                                                $"There is no a projects available."))
+                                            : _mapper.Map<List<Project>>(projectsFound);
         }
 
         public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
@@ -121,9 +131,9 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound == null ? _mapper.Map<List<Project>>(Guard.Against.Null(projectsFound, nameof(projectsFound),
-                                            $"There is no a project available with this ID: {projectsFound}."))
-                                         : _mapper.Map<List<Project>>(projectsFound);
+            return projectsFound.Count == 0 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
+                                                $"There is no a projects available."))
+                                            : _mapper.Map<List<Project>>(projectsFound);
         }
 
         public async Task<Project> GetProjectByIdAsync(string idProject)
