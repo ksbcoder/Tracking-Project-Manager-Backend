@@ -114,7 +114,7 @@ namespace Projects.Tests.ProjectTests
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task Test_Get_Project_By_ProjectID_When_ProjectID_Exist_In_DB()
+        public async System.Threading.Tasks.Task Test_Get_Project_By_ProjectID_When_Exist_In_DB()
         {
             //Arrange
             Guid projectID = Guid.NewGuid();
