@@ -145,20 +145,20 @@ namespace Projects.Infrastructure.Repositories
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
-                                where p.ProjectID == Guid.Parse(idProject) 
+                                where p.ProjectID == Guid.Parse(idProject)
                                         && p.StateProject == Enums.StateProject.Active
                                         && p.OpenDate == null && p.DeadLine == null && p.Phase == null
                                 select p)
                                 .SingleOrDefault();
 
-            Guard.Against.Null(projectFound, nameof(projectFound), 
+            Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available or was open already. ID: {idProject}.");
 
             ProjectHandler.SetDetailsWhenOpenProject(projectFound, project);
             string query = $"UPDATE {_tableNameProjects} SET OpenDate = @OpenDate, DeadLine = @DeadLine, Phase = @Phase " +
                             $"WHERE ProjectID = @ProjectID";
             var result = await connection.ExecuteAsync(query, projectFound);
-            connection.Close() ;
+            connection.Close();
 
             return result == 0 ? _mapper.Map<UpdateProjectDTO>(Guard.Against.Zero(result, nameof(result),
                                      $"The record has not been modified. Rows affected ({result})"))

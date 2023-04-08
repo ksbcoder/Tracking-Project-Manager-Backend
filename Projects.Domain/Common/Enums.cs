@@ -34,7 +34,8 @@
         {
             Pending,
             Approved,
-            Denied
+            Denied,
+            Deleted
         }
 
         public enum StateComment

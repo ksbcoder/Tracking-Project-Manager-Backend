@@ -3,6 +3,7 @@ using AutoMapper;
 using Dapper;
 using Projects.Business.Gateway.Repositories;
 using Projects.Domain.Common;
+using Projects.Domain.Common.Handlers;
 using Projects.Domain.DTO.Task;
 using Projects.Domain.Entities;
 using Projects.Domain.Entities.Handlers;
@@ -49,7 +50,7 @@ namespace Projects.Infrastructure.Repositories
             taskFound.SetAssignedAt(DateTime.Now);
             taskFound.SetStateTask(Enums.StateTask.Assigned);
 
-            var viableAssignedDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskFound.AssignedAt, projectFound);
+            var viableAssignedDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(taskFound.AssignedAt, projectFound);
             if (!viableAssignedDate)
             {
                 Guard.Against.Default(viableAssignedDate, nameof(viableAssignedDate),
@@ -92,7 +93,7 @@ namespace Projects.Infrastructure.Repositories
             taskFound.SetCompletedAt(DateTime.Now);
             taskFound.SetStateTask(Enums.StateTask.Completed);
 
-            var viableCompletedDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskFound.CompletedAt, projectFound);
+            var viableCompletedDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(taskFound.CompletedAt, projectFound);
             if (!viableCompletedDate)
             {
                 Guard.Against.Default(viableCompletedDate, nameof(viableCompletedDate),
@@ -124,7 +125,7 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available with this ID: {task.ProjectID}.");
 
-            var viableDeadlineDate = TaskHandler.ValidateWithinTheProjectTimeFrame(task.DeadLine, projectFound);
+            var viableDeadlineDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(task.DeadLine, projectFound);
             if (!viableDeadlineDate)
             {
                 Guard.Against.Default(viableDeadlineDate, nameof(viableDeadlineDate),
@@ -225,7 +226,7 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.EnumOutOfRange(taskToUpdate.Priority, nameof(taskToUpdate.Priority));
             Guard.Against.EnumOutOfRange(taskToUpdate.StateTask, nameof(taskToUpdate.StateTask));
 
-            var viableDeadlineDate = TaskHandler.ValidateWithinTheProjectTimeFrame(taskToUpdate.DeadLine, projectFound);
+            var viableDeadlineDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(taskToUpdate.DeadLine, projectFound);
             if (!viableDeadlineDate)
             {
                 Guard.Against.Default(viableDeadlineDate, nameof(viableDeadlineDate),

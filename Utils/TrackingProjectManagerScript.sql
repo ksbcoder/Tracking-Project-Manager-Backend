@@ -17,7 +17,7 @@ CREATE TABLE Inscriptions (
     ProjectID UNIQUEIDENTIFIER NOT NULL,
     UidUser VARCHAR(40) NOT NULL,
     CreatedAt DATETIME NOT NULL,
-    ResponsedAt DATETIME NOT NULL,
+    ResponsedAt DATETIME,
     StateInscription INT NOT NULL,
     FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE
 );
