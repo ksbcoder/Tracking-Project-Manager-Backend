@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Projects.Domain.Commands.Comment;
 using Projects.Domain.Commands.Inscription;
 using Projects.Domain.Commands.Project;
 using Projects.Domain.Commands.Task;
+using Projects.Domain.DTO.Comment;
 using Projects.Domain.DTO.Inscription;
 using Projects.Domain.DTO.Project;
 using Projects.Domain.DTO.Task;
@@ -33,7 +35,12 @@ namespace Projects.API.AutoMapper
             CreateMap<NewInscriptionCommand, Inscription>().ReverseMap();
             CreateMap<Inscription, NewInscriptionDTO>().ReverseMap();
             CreateMap<Inscription, InscriptionRespondedDTO>().ReverseMap();
-            //CreateMap<UpdateInscriptionCommand, Inscription>().ReverseMap();
+            #endregion
+
+            #region Comment
+            CreateMap<NewCommentCommand, Comment>().ReverseMap();
+            CreateMap<Comment, NewCommentDTO>().ReverseMap();
+            CreateMap<Comment, UpdateCommentDTO>().ReverseMap();
             #endregion
         }
     }

@@ -63,9 +63,9 @@ namespace Projects.API.Controllers
         }
 
         [HttpGet("AllNoDeleted")]
-        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
-            return await _projectUseCase.GetAllNoDeletedProjectsAsync();
+            return await _projectUseCase.GetAllProjectsAsync();
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Projects.Infrastructure.Repositories
                 : _mapper.Map<List<Project>>(projectsFound);
         }
 
-        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 

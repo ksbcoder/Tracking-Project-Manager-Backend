@@ -8,7 +8,6 @@ using Projects.Domain.DTO.Task;
 using Projects.Domain.Entities;
 using Projects.Domain.Entities.Handlers;
 using Projects.Infrastructure.Gateway;
-using System.Threading.Tasks;
 
 namespace Projects.Infrastructure.Repositories
 {
@@ -53,7 +52,7 @@ namespace Projects.Infrastructure.Repositories
                                     .SingleOrDefault();
 
             Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                $"There is no a inscription available or was denied. " +
+                $"There is no an inscription available or was denied. " +
                 $"project ID: {taskFound.ProjectID}, uid user: {uidUser}.");
 
             taskFound.SetAssignedTo(uidUser);
@@ -107,7 +106,7 @@ namespace Projects.Infrastructure.Repositories
                                     .SingleOrDefault();
 
             Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                $"There is no a inscription available or was denied. " +
+                $"There is no an inscription available or was denied. " +
                 $"project ID: {taskFound.ProjectID}, uid user: {taskFound.AssignedTo}.");
 
             taskFound.SetCompletedAt(DateTime.Now);
@@ -200,12 +199,15 @@ namespace Projects.Infrastructure.Repositories
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
-                                where t.StateTask != Enums.StateTask.Deleted
-                                select t)
+                              where t.StateTask != Enums.StateTask.Deleted
+                              select t)
                                 .ToList();
             connection.Close();
-            Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound), $"There are no tasks available.");
-            return tasksFound;
+            return tasksFound.Count == 0
+                ? _mapper.Map<List<Domain.Entities.Task>>(
+                    Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound),
+                        $"There are no tasks available."))
+                : tasksFound;
         }
 
         public async Task<Domain.Entities.Task> GetTaskByIdAsync(int idTask)
@@ -227,13 +229,16 @@ namespace Projects.Infrastructure.Repositories
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
-                              where t.StateTask == Enums.StateTask.Active 
+                              where t.StateTask == Enums.StateTask.Active
                               && t.StateTask != Enums.StateTask.Assigned && t.AssignedTo == null
                               select t)
                                 .ToList();
             connection.Close();
-            Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound), $"There are no tasks available.");
-            return tasksFound;
+            return tasksFound.Count == 0
+                ? _mapper.Map<List<Domain.Entities.Task>>(
+                    Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound),
+                        $"There are no tasks available."))
+                : tasksFound;
         }
 
         public async Task<UpdateTaskDTO> UpdateTaskAsync(int idTask, Domain.Entities.Task task)

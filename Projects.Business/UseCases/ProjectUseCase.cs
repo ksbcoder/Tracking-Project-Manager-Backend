@@ -33,9 +33,9 @@ namespace Projects.Business.UseCases
             return await _projectRepository.GetActiveProjectsAsync();
         }
 
-        public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
-            return await _projectRepository.GetAllNoDeletedProjectsAsync();
+            return await _projectRepository.GetAllProjectsAsync();
 
         }
         public Task<Project> GetProjectByIdAsync(string idProject)
