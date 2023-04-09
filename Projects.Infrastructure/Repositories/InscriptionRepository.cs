@@ -27,6 +27,18 @@ namespace Projects.Infrastructure.Repositories
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
+            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
+                                    where i.UidUser == inscription.UidUser && i.ProjectID == inscription.ProjectID
+                                    && i.StateInscription != Enums.StateInscription.Deleted
+                                    select i)
+                                    .SingleOrDefault();
+
+            if (inscriptionFound != null)
+            {
+                Guard.Against.Default(inscriptionFound, nameof(inscriptionFound),
+                    $"There is already an inscription of yours in this project with ID: {inscription.ProjectID}.");
+            }
+
             var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
                                 where p.ProjectID == inscription.ProjectID && p.StateProject == Enums.StateProject.Active
                                 && p.Phase != Enums.Phase.Completed
@@ -68,7 +80,7 @@ namespace Projects.Infrastructure.Repositories
                                     .SingleOrDefault();
 
             Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                                   $"There is no a inscription available or was deleted already. ID: {idInscription}.");
+                                   $"There is no an inscription available or was deleted already. ID: {idInscription}.");
 
             inscriptionFound.SetStateInscription(Enums.StateInscription.Deleted);
             string query = $"UPDATE {_tableNameInscriptions} SET StateInscription = @StateInscription " +
@@ -90,10 +102,11 @@ namespace Projects.Infrastructure.Repositories
                                 select i)
                                 .ToList();
             connection.Close();
-            return inscriptions.Count == 0 ? _mapper.Map<List<Inscription>>(
-                                                Guard.Against.NullOrEmpty(inscriptions, nameof(inscriptions),
-                                                $"There are no inscriptions available."))
-                                            : inscriptions;
+            return inscriptions.Count == 0 
+                ? _mapper.Map<List<Inscription>>(
+                    Guard.Against.NullOrEmpty(inscriptions, nameof(inscriptions),
+                        $"There are no inscriptions available."))
+                : inscriptions;
         }
 
         public async Task<InscriptionRespondedDTO> RespondInscriptionAsync(string idInscription, int value)
@@ -107,7 +120,7 @@ namespace Projects.Infrastructure.Repositories
                                     .SingleOrDefault();
 
             Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                           $"There is no a inscription available or was respond already. ID: {idInscription}.");
+                           $"There is no an inscription available or was respond already. ID: {idInscription}.");
             Guard.Against.OutOfRange(value, nameof(value), 1, 2,
                            $"The value: {value} is out of range (1-2).");
             switch (value)
