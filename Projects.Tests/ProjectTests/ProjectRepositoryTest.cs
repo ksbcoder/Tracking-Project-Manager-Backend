@@ -233,5 +233,29 @@ namespace Projects.Tests.ProjectTests
             Assert.NotNull(result);
             Assert.Equal(projectsList, result);
         }
+
+        [Fact]
+        public async System.Threading.Tasks.Task Test_Get_All_Projects()
+        {
+            //Arrange
+            var projectID = Guid.NewGuid();
+            var project = new Project();
+            project.SetProjectID(projectID);
+            project.SetStateProject(Enums.StateProject.Active);
+            project.SetOpenDate(null);
+            project.SetDeadLine(null);
+            project.SetPhase(null);
+
+            var projectsList = new List<Project> { project };
+
+            _mockProjectRepository.Setup(m => m.GetAllProjectsAsync()).ReturnsAsync(projectsList);
+
+            //Act
+            var result = await _mockProjectRepository.Object.GetAllProjectsAsync();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(projectsList, result);
+        }
     }
 }

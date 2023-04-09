@@ -49,7 +49,7 @@ namespace Projects.Tests.ProjectTests
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task Test_Delete_Task_When_ProjectID_Exist_In_DB()
+        public async System.Threading.Tasks.Task Test_Delete_Task_When_TaskID_Exist_In_DB()
         {
             //Arrange
             int taskID = 1;

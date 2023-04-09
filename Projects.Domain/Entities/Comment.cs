@@ -33,7 +33,7 @@ namespace Projects.Domain.Entities
         {
             ProjectID = projectID;
         }
-        public void SetUserID(string userID)
+        public void SetUidUser(string userID)
         {
             UidUser = userID;
         }

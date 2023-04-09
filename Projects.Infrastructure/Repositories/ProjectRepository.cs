@@ -117,7 +117,7 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound.Count == 0 
+            return projectsFound.Count == 0
                 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
                     $"There is no a projects available."))
                 : _mapper.Map<List<Project>>(projectsFound);
@@ -132,7 +132,7 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound.Count == 0 
+            return projectsFound.Count == 0
                 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
                     $"There is no a projects available."))
                 : _mapper.Map<List<Project>>(projectsFound);
@@ -187,7 +187,7 @@ namespace Projects.Infrastructure.Repositories
                                 select p)
                                 .SingleOrDefault();
 
-            var projectToUpdate = projectFound != null 
+            var projectToUpdate = projectFound != null
                     ? ProjectHandler.SetNewAplicableValuesToProjectEntity(projectFound, project)
                     : Guard.Against.Null(projectFound, nameof(projectFound),
                         $"There is no a project available with this ID: {idProject} " +
