@@ -147,6 +147,52 @@ namespace Projects.Tests.ProjectTests
         }
 
         [Fact]
+        public async System.Threading.Tasks.Task Test_Get_All_Tasks()
+        {
+            //Arrange
+            var taskToFind = new Domain.Entities.Task();
+            taskToFind.SetProjectID(Guid.NewGuid());
+            taskToFind.SetDescription("Description");
+            taskToFind.SetCreatedBy("ID");
+            taskToFind.SetDeadLine(DateTime.Now);
+            taskToFind.SetPriority(Enums.Priority.Medium);
+
+            var taskList = new List<Domain.Entities.Task> { taskToFind };
+            _taskRepositoryMock.Setup(m => m.GetAllTasksAsync()).ReturnsAsync(taskList);
+
+            //Act
+            var result = await _taskRepositoryMock.Object.GetAllTasksAsync();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(taskList, result);
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task Test_Get_Unassigned_Tasks()
+        {
+            //Arrange
+            var taskToFind = new Domain.Entities.Task();
+            taskToFind.SetProjectID(Guid.NewGuid());
+            taskToFind.SetDescription("Description");
+            taskToFind.SetCreatedBy("ID");
+            taskToFind.SetAssignedTo(null);
+            taskToFind.SetDeadLine(DateTime.Now);
+            taskToFind.SetPriority(Enums.Priority.Medium);
+            taskToFind.SetStateTask(Enums.StateTask.Active);
+
+            var taskList = new List<Domain.Entities.Task> { taskToFind };
+            _taskRepositoryMock.Setup(m => m.GetUnassignedTasksAsync()).ReturnsAsync(taskList);
+
+            //Act
+            var result = await _taskRepositoryMock.Object.GetUnassignedTasksAsync();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(taskList, result);
+        }
+
+        [Fact]
         public async System.Threading.Tasks.Task Test_Assign_Task_When_Status_Is_Active_And_Not_Yet_Assigned()
         {
             //Arrange

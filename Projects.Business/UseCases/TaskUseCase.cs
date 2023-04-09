@@ -32,9 +32,19 @@ namespace Projects.Business.UseCases
             return await _taskRepository.DeleteTaskAsync(idTask);
         }
 
+        public async Task<List<Domain.Entities.Task>> GetAllTasksAsync()
+        {
+            return await _taskRepository.GetAllTasksAsync();
+        }
+
         public async Task<Domain.Entities.Task> GetTaskByIdAsync(int idTask)
         {
             return await _taskRepository.GetTaskByIdAsync(idTask);
+        }
+
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        {
+            return await _taskRepository.GetUnassignedTasksAsync();
         }
 
         public async Task<UpdateTaskDTO> UpdateTaskAsync(int idTask, Domain.Entities.Task task)

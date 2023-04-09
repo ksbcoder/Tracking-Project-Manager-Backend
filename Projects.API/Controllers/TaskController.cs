@@ -43,6 +43,18 @@ namespace Projects.API.Controllers
             return await _taskUseCase.GetTaskByIdAsync(idTask);
         }
 
+        [HttpGet("All")]
+        public async Task<List<Domain.Entities.Task>> GetAllTasksAsync()
+        {
+            return await _taskUseCase.GetAllTasksAsync();
+        }
+
+        [HttpGet("Unassigned")]
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        {
+            return await _taskUseCase.GetUnassignedTasksAsync();
+        }
+
         [HttpPut("CompleteTask/ID")]
         public async Task<UpdateTaskDTO> CompleteTaskAsync(int idTask)
         {

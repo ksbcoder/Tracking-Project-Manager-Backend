@@ -117,9 +117,10 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound.Count == 0 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
-                                                $"There is no a projects available."))
-                                            : _mapper.Map<List<Project>>(projectsFound);
+            return projectsFound.Count == 0 
+                ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
+                    $"There is no a projects available."))
+                : _mapper.Map<List<Project>>(projectsFound);
         }
 
         public async Task<List<Project>> GetAllNoDeletedProjectsAsync()
@@ -131,9 +132,10 @@ namespace Projects.Infrastructure.Repositories
                                  select p)
                                  .ToList();
             connection.Close();
-            return projectsFound.Count == 0 ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
-                                                $"There is no a projects available."))
-                                            : _mapper.Map<List<Project>>(projectsFound);
+            return projectsFound.Count == 0 
+                ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
+                    $"There is no a projects available."))
+                : _mapper.Map<List<Project>>(projectsFound);
         }
 
         public async Task<Project> GetProjectByIdAsync(string idProject)
@@ -185,10 +187,11 @@ namespace Projects.Infrastructure.Repositories
                                 select p)
                                 .SingleOrDefault();
 
-            var projectToUpdate = projectFound != null ? ProjectHandler.SetNewAplicableValuesToProjectEntity(projectFound, project)
-                                                        : Guard.Against.Null(projectFound, nameof(projectFound),
-                                                            $"There is no a project available with this ID: {idProject} " +
-                                                            $"or it doesn't open yet.");
+            var projectToUpdate = projectFound != null 
+                    ? ProjectHandler.SetNewAplicableValuesToProjectEntity(projectFound, project)
+                    : Guard.Against.Null(projectFound, nameof(projectFound),
+                        $"There is no a project available with this ID: {idProject} " +
+                        $"or it doesn't open yet.");
 
             Guard.Against.Null(projectToUpdate, nameof(projectToUpdate));
             Guard.Against.NullOrEmpty(projectToUpdate.ProjectID, nameof(projectToUpdate.ProjectID));

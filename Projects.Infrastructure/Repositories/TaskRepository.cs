@@ -8,6 +8,7 @@ using Projects.Domain.DTO.Task;
 using Projects.Domain.Entities;
 using Projects.Domain.Entities.Handlers;
 using Projects.Infrastructure.Gateway;
+using System.Threading.Tasks;
 
 namespace Projects.Infrastructure.Repositories
 {
@@ -194,6 +195,19 @@ namespace Projects.Infrastructure.Repositories
                                 : _mapper.Map<UpdateTaskDTO>(taskFound);
         }
 
+        public async Task<List<Domain.Entities.Task>> GetAllTasksAsync()
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                                where t.StateTask != Enums.StateTask.Deleted
+                                select t)
+                                .ToList();
+            connection.Close();
+            Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound), $"There are no tasks available.");
+            return tasksFound;
+        }
+
         public async Task<Domain.Entities.Task> GetTaskByIdAsync(int idTask)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
@@ -203,13 +217,23 @@ namespace Projects.Infrastructure.Repositories
                              select t)
                              .SingleOrDefault();
             connection.Close();
-
-            Guard.Against.Null(taskFound, nameof(taskFound),
-                $"There is no a task available with this ID: {idTask}.");
-
             return taskFound == null ? _mapper.Map<Domain.Entities.Task>(Guard.Against.Null(taskFound, nameof(taskFound),
                                            $"There is no a task available with this ID: {idTask}."))
                                         : _mapper.Map<Domain.Entities.Task>(taskFound);
+        }
+
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                              where t.StateTask == Enums.StateTask.Active 
+                              && t.StateTask != Enums.StateTask.Assigned && t.AssignedTo == null
+                              select t)
+                                .ToList();
+            connection.Close();
+            Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound), $"There are no tasks available.");
+            return tasksFound;
         }
 
         public async Task<UpdateTaskDTO> UpdateTaskAsync(int idTask, Domain.Entities.Task task)
