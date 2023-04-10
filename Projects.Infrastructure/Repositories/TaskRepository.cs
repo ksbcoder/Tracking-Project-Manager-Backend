@@ -112,13 +112,12 @@ namespace Projects.Infrastructure.Repositories
             taskFound.SetCompletedAt(DateTime.Now);
             taskFound.SetStateTask(Enums.StateTask.Completed);
 
-            var viableCompletedDate = DatesHandler.ValidateWithinTheOpenProjectDeadLine(taskFound.CompletedAt, projectFound);
+            var viableCompletedDate = DatesHandler.ValidateWithinTheOpenProject(taskFound.CompletedAt, projectFound);
             if (!viableCompletedDate)
             {
                 Guard.Against.Default(viableCompletedDate, nameof(viableCompletedDate),
                     $"Task completed date: {taskFound.CompletedAt:dd/MM/yyyy} " +
-                    $"is greater than project deadline: {projectFound.DeadLine:dd/MM/yyyy} " +
-                    $"or less than project open date: {projectFound.OpenDate:dd/MM/yyyy}.");
+                    $"is less than project open date: {projectFound.OpenDate:dd/MM/yyyy}.");
             }
 
             string query = $"UPDATE {_tableNameTasks} SET CompletedAt = @CompletedAt, " +

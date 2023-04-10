@@ -3,6 +3,7 @@ using AutoMapper;
 using Dapper;
 using Projects.Business.Gateway.Repositories;
 using Projects.Domain.Common;
+using Projects.Domain.Common.Handlers;
 using Projects.Domain.DTO.Project;
 using Projects.Domain.Entities;
 using Projects.Domain.Entities.Handlers;
@@ -49,9 +50,9 @@ namespace Projects.Infrastructure.Repositories
             projectFound.SetPhase(Enums.Phase.Completed);
             projectFound.SetStateProject(Enums.StateProject.Inactive);
             projectFound.SetCompletedAt(DateTime.Now);
-            int expectedDays = ProjectHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.DeadLine);
-            int realDays = ProjectHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.CompletedAt);
-            projectFound.SetEfficiencyRate(ProjectHandler.CalculateEfficiencyRate(expectedDays, realDays));
+            int expectedDays = DatesHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.DeadLine);
+            int realDays = DatesHandler.CalculateDaysFromTo(projectFound.OpenDate, projectFound.CompletedAt);
+            projectFound.SetEfficiencyRate(ProjectHandler.CalculateEfficiencyRateProject(expectedDays, realDays));
 
             string query = $"UPDATE {_tableNameProjects} SET Phase = @Phase, StateProject = @StateProject, " +
                             $"CompletedAt = @CompletedAt " +

@@ -17,5 +17,13 @@
             oldTask.SetPriority(newTask.Priority);
             return oldTask;
         }
+        public static decimal CalculateEfficiencyRateUser(int expectedDays, int realDays)
+        {
+            decimal efficiencyRate = ((decimal)expectedDays / realDays) * 100;
+            efficiencyRate = Math.Round(efficiencyRate, 2);
+            efficiencyRate = efficiencyRate < 0 ? 0 : efficiencyRate;
+            efficiencyRate = efficiencyRate > 100 ? 100 : efficiencyRate;
+            return efficiencyRate;
+        }
     }
 }

@@ -20,7 +20,6 @@ namespace Projects.Domain.Entities.Handlers
             oldProject.SetStateProject(newProject.StateProject);
             return oldProject;
         }
-
         public static Project SetDetailsWhenOpenProject(Project oldProject, Project newProject)
         {
             oldProject.SetOpenDate(DateTime.Now);
@@ -28,15 +27,7 @@ namespace Projects.Domain.Entities.Handlers
             oldProject.SetPhase(Enums.Phase.Started);
             return oldProject;
         }
-
-        public static int CalculateDaysFromTo(DateTime? dateFrom, DateTime? dateTo)
-        {
-            TimeSpan dateDifference = (TimeSpan)(dateTo - dateFrom);
-            int days = dateDifference.Days <= 0 ? 1 : dateDifference.Days;
-            return days;
-        }
-
-        public static decimal CalculateEfficiencyRate(int expectedDays, int realDays)
+        public static decimal CalculateEfficiencyRateProject(int expectedDays, int realDays)
         {
             decimal efficiencyRate = ((decimal)expectedDays / realDays) * 100;
             efficiencyRate = Math.Round(efficiencyRate, 2);
