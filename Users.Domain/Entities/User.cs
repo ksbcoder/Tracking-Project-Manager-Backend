@@ -19,6 +19,7 @@ namespace Users.Domain.Entities
         {
             user.EfficiencyRate = 100;
             user.TasksCompleted = 0;
+            user.Role = Enums.Roles.Default;
             user.StateUser = Enums.StateUser.Active;
 
             return user;

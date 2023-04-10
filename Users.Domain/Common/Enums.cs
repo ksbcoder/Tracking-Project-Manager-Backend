@@ -11,6 +11,7 @@
 
         public enum Roles
         {
+            Default,
             Admin,
             Contributor
         }

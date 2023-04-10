@@ -35,9 +35,9 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("ID")]
-        public async Task<UpdateUserDTO> DeleteUserAsync(string uidUserd)
+        public async Task<UpdateUserDTO> DeleteUserAsync(string uidUser)
         {
-            return await _userCommandUseCase.DeleteUserAsync(uidUserd);
+            return await _userCommandUseCase.DeleteUserAsync(uidUser);
         }
 
         [HttpGet("ID")]
