@@ -7,7 +7,7 @@ using Users.Domain.Entities;
 
 namespace Users.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

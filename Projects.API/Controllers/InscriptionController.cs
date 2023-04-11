@@ -7,7 +7,7 @@ using Projects.Domain.Entities;
 
 namespace Projects.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class InscriptionController : ControllerBase
     {
