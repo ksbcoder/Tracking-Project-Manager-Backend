@@ -11,6 +11,11 @@ using Users.Infrastructure.Interfaces;
 using Users.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+//services cors
+builder.Services.AddCors(p => p.AddPolicy("devcors", builder =>
+{
+    builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+}));
 
 // Add services to the container.
 
@@ -37,6 +42,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("devcors");
 
 app.UseAuthorization();
 

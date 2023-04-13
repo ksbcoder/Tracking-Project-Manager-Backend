@@ -45,5 +45,11 @@ namespace Users.API.Controllers
         {
             return await _userQueryUseCase.GetUserByIdAsync(uidUser);
         }
+
+        [HttpGet]
+        public async Task<List<User>> GetActiveUsersAsync()
+        {
+            return await _userQueryUseCase.GetActiveUsersAsync();
+        }
     }
 }

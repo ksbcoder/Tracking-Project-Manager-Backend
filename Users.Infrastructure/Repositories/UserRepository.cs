@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using AutoMapper;
 using MongoDB.Driver;
+using System.Transactions;
 using Users.Business.Gateway.Repositories.Commands;
 using Users.Business.Gateway.Repositories.Queries;
 using Users.Domain.Common;
@@ -53,6 +54,15 @@ namespace Users.Infrastructure.Repositories
             await _usersCollection.FindOneAndReplaceAsync(u => u.UidUser == uidUser, userToDelete);
 
             return _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
+        }
+
+        public async Task<List<User>> GetActiveUsersAsync()
+        {
+            var users = await _usersCollection.FindAsync(u => u.StateUser == Enums.StateUser.Active);
+            var usersList = _mapper.Map<List<User>>(users.ToList());
+
+            return usersList ?? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList), 
+                "There isn't any active user available."));
         }
 
         public async Task<User> GetUserByIdAsync(string uidUser)
