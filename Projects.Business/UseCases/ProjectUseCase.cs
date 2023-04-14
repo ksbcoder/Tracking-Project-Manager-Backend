@@ -43,6 +43,11 @@ namespace Projects.Business.UseCases
             return _projectRepository.GetProjectByIdAsync(idProject);
         }
 
+        public Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId)
+        {
+            return _projectRepository.GetProjectsByLeaderIdAsync(leaderId);
+        }
+
         public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)
         {
             return await _projectRepository.OpenProjectAsync(idProject, project);

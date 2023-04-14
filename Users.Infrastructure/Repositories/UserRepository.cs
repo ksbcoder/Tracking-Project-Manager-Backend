@@ -1,7 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using AutoMapper;
 using MongoDB.Driver;
-using System.Transactions;
 using Users.Business.Gateway.Repositories.Commands;
 using Users.Business.Gateway.Repositories.Queries;
 using Users.Domain.Common;
@@ -40,7 +39,7 @@ namespace Users.Infrastructure.Repositories
             await _usersCollection.InsertOneAsync(userToCreate);
             return _mapper.Map<NewUserDTO>(userToCreate);
         }
-            
+
         public async Task<UpdateUserDTO> DeleteUserAsync(string uidUser)
         {
             var userToDelete = await _usersCollection.Find(u => u.UidUser == uidUser
@@ -61,7 +60,7 @@ namespace Users.Infrastructure.Repositories
             var users = await _usersCollection.FindAsync(u => u.StateUser != Enums.StateUser.Eliminated);
             var usersList = _mapper.Map<List<User>>(users.ToList());
 
-            return usersList ?? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList), 
+            return usersList ?? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList),
                 "There isn't any active user available."));
         }
 

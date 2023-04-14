@@ -56,6 +56,12 @@ namespace Projects.API.Controllers
             return await _projectUseCase.GetProjectByIdAsync(idProject);
         }
 
+        [HttpGet("LeaderID")]
+        public async Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId)
+        {
+            return await _projectUseCase.GetProjectsByLeaderIdAsync(leaderId);
+        }
+
         [HttpGet("ActiveOnly")]
         public async Task<List<Project>> GetActiveProjectsAsync()
         {

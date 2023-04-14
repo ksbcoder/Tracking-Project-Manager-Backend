@@ -10,6 +10,7 @@ namespace Projects.Business.Gateway
         Task<UpdateProjectDTO> DeleteProjectAsync(string idProject);
         Task<Project> GetProjectByIdAsync(string idProject);
         //use cases
+        Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId);
         Task<List<Project>> GetActiveProjectsAsync();
         Task<List<Project>> GetAllProjectsAsync();
         Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project);

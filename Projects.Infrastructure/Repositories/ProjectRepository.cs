@@ -153,6 +153,21 @@ namespace Projects.Infrastructure.Repositories
                                         : _mapper.Map<Project>(projectFound);
         }
 
+        public async Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId)
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                 where p.LeaderID == leaderId && p.StateProject != Enums.StateProject.Deleted
+                                 select p)
+                                 .ToList();
+            connection.Close();
+            return projectsFound.Count == 0
+                                        ? _mapper.Map<List<Project>>(Guard.Against.NullOrEmpty(projectsFound, nameof(projectsFound),
+                                                           $"There is no a projects available with this Leader ID: {leaderId}."))
+                                        : _mapper.Map<List<Project>>(projectsFound);
+        }
+
         public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
