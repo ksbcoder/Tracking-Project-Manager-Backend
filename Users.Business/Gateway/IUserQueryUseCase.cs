@@ -4,7 +4,7 @@ namespace Users.Business.Gateway
 {
     public interface IUserQueryUseCase
     {
-        Task<List<User>> GetActiveUsersAsync();
+        Task<List<User>> GetUsersAsync();
         Task<User> GetUserByIdAsync(string uidUser);
     }
 }

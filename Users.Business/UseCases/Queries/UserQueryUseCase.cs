@@ -18,9 +18,9 @@ namespace Users.Business.UseCases.Queries
             return await _userQueryRepository.GetUserByIdAsync(uidUser);
         }
 
-        public async Task<List<User>> GetActiveUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            return await _userQueryRepository.GetActiveUsersAsync();
+            return await _userQueryRepository.GetUsersAsync();
         }
     }
 }

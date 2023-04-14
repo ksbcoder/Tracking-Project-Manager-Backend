@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Users.Business.Gateway;
 using Users.Domain.Commands;
@@ -39,7 +40,7 @@ namespace Users.API.Controllers
         {
             return await _userCommandUseCase.DeleteUserAsync(uidUser);
         }
-
+        
         [HttpGet("ID")]
         public async Task<User> GetUserByIdAsync(string uidUser)
         {
@@ -47,9 +48,9 @@ namespace Users.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<User>> GetActiveUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            return await _userQueryUseCase.GetActiveUsersAsync();
+            return await _userQueryUseCase.GetUsersAsync();
         }
     }
 }

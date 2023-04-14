@@ -40,7 +40,7 @@ namespace Users.Infrastructure.Repositories
             await _usersCollection.InsertOneAsync(userToCreate);
             return _mapper.Map<NewUserDTO>(userToCreate);
         }
-
+            
         public async Task<UpdateUserDTO> DeleteUserAsync(string uidUser)
         {
             var userToDelete = await _usersCollection.Find(u => u.UidUser == uidUser
@@ -56,9 +56,9 @@ namespace Users.Infrastructure.Repositories
             return _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
         }
 
-        public async Task<List<User>> GetActiveUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            var users = await _usersCollection.FindAsync(u => u.StateUser == Enums.StateUser.Active);
+            var users = await _usersCollection.FindAsync(u => u.StateUser != Enums.StateUser.Eliminated);
             var usersList = _mapper.Map<List<User>>(users.ToList());
 
             return usersList ?? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList), 
@@ -68,7 +68,7 @@ namespace Users.Infrastructure.Repositories
         public async Task<User> GetUserByIdAsync(string uidUser)
         {
             var user = _mapper.Map<User>(await _usersCollection.Find(u => u.UidUser == uidUser
-                    && u.StateUser == Enums.StateUser.Active).FirstOrDefaultAsync());
+                    && u.StateUser != Enums.StateUser.Eliminated).FirstOrDefaultAsync());
 
             return user ?? _mapper.Map<User>(Guard.Against.Null(user, nameof(user),
                             $"There isn't an user available with this uidUser: {uidUser}."));
