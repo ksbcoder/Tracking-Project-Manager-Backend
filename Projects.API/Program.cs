@@ -16,6 +16,8 @@ builder.Services.AddCors(p => p.AddPolicy("devcors", builder =>
     builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
     builder.WithOrigins("https://tracking-project-manager-4414f.firebaseapp.com").AllowAnyMethod().AllowAnyHeader();
     builder.WithOrigins("https://tracking-project-manager-4414f.web.app").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://tracking-project-manage.firebaseapp.com").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://tracking-project-manage.web.app").AllowAnyMethod().AllowAnyHeader();
 }));
 
 // Add services to the container.
