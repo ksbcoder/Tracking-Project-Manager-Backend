@@ -1,6 +1,12 @@
 # Tracking-Project-Manager-Backend
 Implementation of backend of the project in .NET
 
+## Diagrams and SQL
+
+[UML](https://github.com/ksbcoder/Tracking-Project-Manager-Backend/blob/0a970805e4c22d0fd28f9d76a1ba57039e16c8dd/Utils/Tracking%20Project%20Manager.drawio.png)
+
+[SQL](https://github.com/ksbcoder/Tracking-Project-Manager-Backend/blob/0a970805e4c22d0fd28f9d76a1ba57039e16c8dd/Utils/TrackingProjectManagerScript.sql)
+
 ## Contracts
 
 ### Project
