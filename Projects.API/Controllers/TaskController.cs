@@ -37,7 +37,7 @@ namespace Projects.API.Controllers
             return await _taskUseCase.DeleteTaskAsync(idTask);
         }
 
-        [HttpGet("ID")]
+        [HttpGet("TaskID")]
         public async Task<Domain.Entities.Task> GetTaskByIdAsync(int idTask)
         {
             return await _taskUseCase.GetTaskByIdAsync(idTask);
@@ -50,9 +50,15 @@ namespace Projects.API.Controllers
         }
 
         [HttpGet("Unassigned")]
-        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync(string idLeader)
         {
-            return await _taskUseCase.GetUnassignedTasksAsync();
+            return await _taskUseCase.GetUnassignedTasksAsync(idLeader);
+        }
+
+        [HttpGet("UserID")]
+        public async Task<List<Domain.Entities.Task>> GetTasksByUserIdAsync(string uidUser)
+        {
+            return await _taskUseCase.GetTasksByUserIdAsync(uidUser);
         }
 
         [HttpPut("CompleteTask/ID")]

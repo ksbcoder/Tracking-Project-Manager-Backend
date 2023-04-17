@@ -8,6 +8,7 @@ namespace Projects.Business.Gateway
         Task<NewInscriptionDTO> CreateInscriptionAsync(Inscription inscription);
         Task<InscriptionRespondedDTO> RespondInscriptionAsync(string idInscription, int value);
         Task<List<Inscription>> GetInscriptionsNoRespondedAsync();
+        Task<Inscription> GetInscriptionByUserIdAsync(string idUser);
         Task<Inscription> DeleteInscriptionAsync(string idInscription);
     }
 }

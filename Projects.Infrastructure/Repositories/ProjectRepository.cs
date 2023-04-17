@@ -55,7 +55,7 @@ namespace Projects.Infrastructure.Repositories
             projectFound.SetEfficiencyRate(ProjectHandler.CalculateEfficiencyRateProject(expectedDays, realDays));
 
             string query = $"UPDATE {_tableNameProjects} SET Phase = @Phase, StateProject = @StateProject, " +
-                            $"CompletedAt = @CompletedAt " +
+                            $"CompletedAt = @CompletedAt, EfficiencyRate = @EfficiencyRate " +
                             $"WHERE ProjectID = @ProjectID";
             var result = await connection.ExecuteAsync(query, projectFound);
             connection.Close();
@@ -181,6 +181,16 @@ namespace Projects.Infrastructure.Repositories
 
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available or was open already. ID: {idProject}.");
+
+            var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
+                                 where p.StateProject == Enums.StateProject.Active && p.Phase == Enums.Phase.Started
+                                 select p)
+                                .ToList();
+
+            if (projectsFound.Count >= 1)
+            {
+                throw new Exception("You can to have one project open at one only.");
+            }
 
             ProjectHandler.SetDetailsWhenOpenProject(projectFound, project);
             string query = $"UPDATE {_tableNameProjects} SET OpenDate = @OpenDate, DeadLine = @DeadLine, Phase = @Phase " +

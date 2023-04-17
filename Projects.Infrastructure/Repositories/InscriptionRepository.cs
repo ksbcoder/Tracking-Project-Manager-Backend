@@ -27,15 +27,22 @@ namespace Projects.Infrastructure.Repositories
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
-            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
-                                    where i.UidUser == inscription.UidUser && i.ProjectID == inscription.ProjectID
-                                    && i.StateInscription != Enums.StateInscription.Deleted
-                                    select i)
-                                    .SingleOrDefault();
+            var inscriptionFound = await connection.QueryFirstOrDefaultAsync<Inscription>(
+                $"SELECT * FROM {_tableNameInscriptions} " +
+                $"WHERE UidUser = @UidUser AND ProjectID = @ProjectID AND StateInscription = @Approved " +
+                $"OR StateInscription = @Pending",
+                new
+                {
+                    UidUser = inscription.UidUser,
+                    ProjectID = inscription.ProjectID,
+                    Approved = Enums.StateInscription.Approved,
+                    Pending = Enums.StateInscription.Pending
+                });
+
 
             if (inscriptionFound != null)
             {
-                Guard.Against.Default(inscriptionFound, nameof(inscriptionFound),
+                throw new ArgumentNullException(
                     $"There is already an inscription of yours in this project with ID: {inscription.ProjectID}.");
             }
 
@@ -93,6 +100,20 @@ namespace Projects.Infrastructure.Repositories
                                 : inscriptionFound;
         }
 
+        public async Task<Inscription> GetInscriptionByUserIdAsync(string idUser)
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
+                                    where i.UidUser == idUser
+                                    && i.StateInscription != Enums.StateInscription.Deleted
+                                    select i)
+                                    .SingleOrDefault();
+            connection.Close();
+            return inscriptionFound ?? _mapper.Map<Inscription>(Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
+                                                   $"There is no an inscription available or was deleted already. ID: {idUser}."));
+        }
+
         public async Task<List<Inscription>> GetInscriptionsNoRespondedAsync()
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
@@ -102,7 +123,7 @@ namespace Projects.Infrastructure.Repositories
                                 select i)
                                 .ToList();
             connection.Close();
-            return inscriptions.Count == 0 
+            return inscriptions.Count == 0
                 ? _mapper.Map<List<Inscription>>(
                     Guard.Against.NullOrEmpty(inscriptions, nameof(inscriptions),
                         $"There are no inscriptions available."))

@@ -223,14 +223,37 @@ namespace Projects.Infrastructure.Repositories
                                         : _mapper.Map<Domain.Entities.Task>(taskFound);
         }
 
-        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        public async Task<List<Domain.Entities.Task>> GetTasksByUserIdAsync(string uidUser)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
-                              where t.StateTask == Enums.StateTask.Active
-                              && t.StateTask != Enums.StateTask.Assigned && t.AssignedTo == null
-                              select t)
+                             where t.StateTask != Enums.StateTask.Deleted && t.AssignedTo == uidUser
+                             select t)
+                             .ToList();
+            connection.Close();
+            return tasksFound.Count == 0
+                ? _mapper.Map<List<Domain.Entities.Task>>(
+                    Guard.Against.NullOrEmpty(tasksFound, nameof(tasksFound),
+                    $"There are no tasks available for this user."))
+                : tasksFound;
+        }
+        
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync(string idLeader)
+        {
+            var connection = await _dbConnectionBuilder.CreateConnectionAsync();
+
+            var projectFound = await connection.QueryFirstOrDefaultAsync<Project>(
+                $"SELECT * FROM {_tableNameProjects} WHERE LeaderID = @LeaderID AND Phase = @Phase",
+                new { LeaderID = idLeader, Phase = Enums.Phase.Started });
+
+            Guard.Against.Null(projectFound, nameof(projectFound),
+                $"There is no a project open for this leader: {idLeader}.");
+
+            var tasksFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
+                                where t.ProjectID == projectFound.ProjectID && t.StateTask == Enums.StateTask.Active
+                                && t.StateTask != Enums.StateTask.Assigned && t.AssignedTo == null
+                                select t)
                                 .ToList();
             connection.Close();
             return tasksFound.Count == 0
@@ -254,8 +277,8 @@ namespace Projects.Infrastructure.Repositories
                 $"There is no a project available or this is completed. ID: {task.ProjectID}.");
 
             var taskFound = (from t in await connection.QueryAsync<Domain.Entities.Task>($"SELECT * FROM {_tableNameTasks}")
-                             where t.TaskID == idTask && t.StateTask == Enums.StateTask.Active
-                             || t.StateTask == Enums.StateTask.Assigned
+                             where t.TaskID == idTask && (t.StateTask == Enums.StateTask.Active
+                             || t.StateTask == Enums.StateTask.Assigned)
                              select t)
                              .SingleOrDefault();
 

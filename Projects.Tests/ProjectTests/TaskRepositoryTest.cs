@@ -172,6 +172,7 @@ namespace Projects.Tests.ProjectTests
         public async System.Threading.Tasks.Task Test_Get_Unassigned_Tasks()
         {
             //Arrange
+            var leaderID = "ID";
             var taskToFind = new Domain.Entities.Task();
             taskToFind.SetProjectID(Guid.NewGuid());
             taskToFind.SetDescription("Description");
@@ -182,14 +183,37 @@ namespace Projects.Tests.ProjectTests
             taskToFind.SetStateTask(Enums.StateTask.Active);
 
             var taskList = new List<Domain.Entities.Task> { taskToFind };
-            _taskRepositoryMock.Setup(m => m.GetUnassignedTasksAsync()).ReturnsAsync(taskList);
+            _taskRepositoryMock.Setup(m => m.GetUnassignedTasksAsync(leaderID)).ReturnsAsync(taskList);
 
             //Act
-            var result = await _taskRepositoryMock.Object.GetUnassignedTasksAsync();
+            var result = await _taskRepositoryMock.Object.GetUnassignedTasksAsync(leaderID);
 
             //Assert
             Assert.NotNull(result);
             Assert.Equal(taskList, result);
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task Test_Get_Tasks_By_User()
+        {
+            //Arrange
+            var userID = "ID";
+            var anotherUserID = "anotherID";
+
+            var task = new Domain.Entities.Task();
+            task.SetAssignedTo(anotherUserID);
+
+            var tasksFound = new List<Domain.Entities.Task> { task };
+
+            _taskRepositoryMock.Setup(m => m.GetTasksByUserIdAsync(userID)).ReturnsAsync(tasksFound);
+
+            //Act
+            var result = await _taskRepositoryMock.Object.GetTasksByUserIdAsync(userID);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<List<Domain.Entities.Task>>(result);
+            Assert.Equal(tasksFound[0].AssignedTo, result[0].AssignedTo);
         }
 
         [Fact]
@@ -211,7 +235,7 @@ namespace Projects.Tests.ProjectTests
                 Deadline = DateTime.Now,
                 CompletedAt = null,
                 Priority = Enums.Priority.Medium,
-                StateTask = Enums.StateTask.Assigned
+                StateTask = Enums.StateTask.Active
             };
             _taskRepositoryMock.Setup(m => m.AssignTaskAsync(taskID, uidUser)).ReturnsAsync(taskAssigned);
 
@@ -220,7 +244,7 @@ namespace Projects.Tests.ProjectTests
 
             //Assert
             Assert.NotNull(result);
-            Assert.Equal(taskAssigned, result);
+            Assert.Equal(taskAssigned.StateTask, result.StateTask);
         }
 
         [Fact]

@@ -24,6 +24,11 @@ namespace Projects.Business.UseCases
             return await _inscriptionRepository.DeleteInscriptionAsync(idInscription);
         }
 
+        public async Task<Inscription> GetInscriptionByUserIdAsync(string idUser)
+        {
+            return await _inscriptionRepository.GetInscriptionByUserIdAsync(idUser);
+        }
+
         public async Task<List<Inscription>> GetInscriptionsNoRespondedAsync()
         {
             return await _inscriptionRepository.GetInscriptionsNoRespondedAsync();

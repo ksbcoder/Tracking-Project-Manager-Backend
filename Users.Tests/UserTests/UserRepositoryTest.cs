@@ -76,6 +76,25 @@ namespace Users.Tests.UserTests
         }
 
         [Fact]
+        public async Task Test_Get_Users_When_Expected_Response()
+        {
+            //Arrange
+
+            var usersFound = new List<User>();
+            var usersNoFound = new List<Task>();
+
+            _mockUserQueryRepositoryMock.Setup(m => m.GetUsersAsync()).ReturnsAsync(usersFound);
+
+            //Act
+            var result = await _mockUserQueryRepositoryMock.Object.GetUsersAsync();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<List<User>>(result);
+            Assert.Equal(usersFound, result);
+        }
+
+        [Fact]
         public async Task Test_Get_User_By_Id_When_UidUser_Exist_In_DB()
         {
             //Arrange

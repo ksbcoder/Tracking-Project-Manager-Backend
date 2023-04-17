@@ -42,9 +42,14 @@ namespace Projects.Business.UseCases
             return await _taskRepository.GetTaskByIdAsync(idTask);
         }
 
-        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync()
+        public async Task<List<Domain.Entities.Task>> GetTasksByUserIdAsync(string uidUser)
         {
-            return await _taskRepository.GetUnassignedTasksAsync();
+            return await _taskRepository.GetTasksByUserIdAsync(uidUser);
+        }
+
+        public async Task<List<Domain.Entities.Task>> GetUnassignedTasksAsync(string idLeader)
+        {
+            return await _taskRepository.GetUnassignedTasksAsync(idLeader);
         }
 
         public async Task<UpdateTaskDTO> UpdateTaskAsync(int idTask, Domain.Entities.Task task)

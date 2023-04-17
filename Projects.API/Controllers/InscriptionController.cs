@@ -26,7 +26,7 @@ namespace Projects.API.Controllers
             return await _inscriptionUseCase.CreateInscriptionAsync(_mapper.Map<Inscription>(newInscriptionCommand));
         }
 
-        [HttpPut("ID")]
+        [HttpPut("Respond")]
         public async Task<InscriptionRespondedDTO> RespondInscriptionAsync(string idInscription, int value)
         {
             return await _inscriptionUseCase.RespondInscriptionAsync(idInscription, value);
@@ -36,6 +36,12 @@ namespace Projects.API.Controllers
         public async Task<Inscription> DeleteInscriptionAsync(string idInscription)
         {
             return await _inscriptionUseCase.DeleteInscriptionAsync(idInscription);
+        }
+
+        [HttpGet("UserID")]
+        public async Task<Inscription> GetInscriptionByUserIdAsync(string idUser)
+        {
+            return await _inscriptionUseCase.GetInscriptionByUserIdAsync(idUser);
         }
 
         [HttpGet("NoResponded")]
