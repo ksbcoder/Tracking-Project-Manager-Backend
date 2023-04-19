@@ -27,15 +27,15 @@ namespace Projects.API.Controllers
         }
 
         [HttpDelete("ID")]
-        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment)
+        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment, string idUser)
         {
-            return await _commentUseCase.DeleteCommentAsync(idComment);
+            return await _commentUseCase.DeleteCommentAsync(idComment, idUser);
         }
 
-        [HttpGet("All")]
-        public async Task<List<Comment>> GetAllCommentsAsync()
+        [HttpGet("All/ProjectID")]
+        public async Task<List<Comment>> GetAllCommentsByProjectIdAsync(string idProject)
         {
-            return await _commentUseCase.GetAllCommentsAsync();
+            return await _commentUseCase.GetAllCommentsByProjectIdAsync(idProject);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Projects.Business.Gateway
         Task<Project> GetProjectByIdAsync(string idProject);
         //use cases
         Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId);
+        Task<List<Project>> GetProjectsActiveByLeaderIdAsync(string leaderId);
         Task<List<Project>> GetActiveProjectsAsync();
         Task<List<Project>> GetAllProjectsAsync();
         Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project);

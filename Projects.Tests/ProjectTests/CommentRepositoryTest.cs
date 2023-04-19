@@ -49,6 +49,7 @@ namespace Projects.Tests.ProjectTests
         {
             //Arrange
             int idComment = 1;
+            string idUser = "ID";
 
             var commentDeleted = new UpdateCommentDTO
             {
@@ -60,9 +61,9 @@ namespace Projects.Tests.ProjectTests
                 StateComment = Enums.StateComment.Deleted
             };
 
-            _commentRepositoryMock.Setup(m => m.DeleteCommentAsync(idComment)).ReturnsAsync(commentDeleted);
+            _commentRepositoryMock.Setup(m => m.DeleteCommentAsync(idComment, idUser)).ReturnsAsync(commentDeleted);
             //Act
-            var result = await _commentRepositoryMock.Object.DeleteCommentAsync(idComment);
+            var result = await _commentRepositoryMock.Object.DeleteCommentAsync(idComment, idUser);
             //Assert
             Assert.NotNull(result);
             Assert.IsType<UpdateCommentDTO>(result);
@@ -73,6 +74,7 @@ namespace Projects.Tests.ProjectTests
         public async System.Threading.Tasks.Task Test_Get_All_Comments()
         {
             //Arrange
+            string idProject = "ID";
             var commentFound = new Comment();
             commentFound.SetUidUser("ID");
             commentFound.SetProjectID(Guid.NewGuid());
@@ -80,10 +82,10 @@ namespace Projects.Tests.ProjectTests
 
             var commentList = new List<Comment> { commentFound };
 
-            _commentRepositoryMock.Setup(m => m.GetAllCommentsAsync()).ReturnsAsync(commentList);
+            _commentRepositoryMock.Setup(m => m.GetAllCommentsByProjectIdAsync(idProject)).ReturnsAsync(commentList);
 
             //Act
-            var result = await _commentRepositoryMock.Object.GetAllCommentsAsync();
+            var result = await _commentRepositoryMock.Object.GetAllCommentsByProjectIdAsync(idProject);
 
             //Assert
             Assert.NotNull(result);

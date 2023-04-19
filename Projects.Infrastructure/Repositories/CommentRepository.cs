@@ -37,15 +37,6 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available with ID: {comment.ProjectID}.");
 
-            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
-                                    where i.UidUser == comment.UidUser && i.ProjectID == comment.ProjectID
-                                    && i.StateInscription == Enums.StateInscription.Approved
-                                    select i)
-                                    .SingleOrDefault();
-
-            Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                    $"There is no an approved inscription or yours in this project.");
-
             Comment.SetDetailsCommentEntity(comment);
             var viableCommentDate = DatesHandler.ValidateWithinTheProjectDeadLineNotOpen(comment.CreatedAt, projectFound);
             if (!viableCommentDate)
@@ -66,18 +57,18 @@ namespace Projects.Infrastructure.Repositories
                                 : _mapper.Map<NewCommentDTO>(comment);
         }
 
-        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment)
+        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment, string idUser)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var commentFound = (from c in await connection.QueryAsync<Comment>($"SELECT * FROM {_tableNameComments}")
-                                where c.CommentID == idComment
+                                where c.CommentID == idComment && c.UidUser == idUser
                                 && c.StateComment != Enums.StateComment.Deleted
                                 select c)
                                 .SingleOrDefault();
 
             Guard.Against.Null(commentFound, nameof(commentFound),
-                $"There is no a comment available with ID: {idComment}.");
+                $"There is no a comment available or is not your. ID: {idComment}.");
 
             var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
                                 where p.ProjectID == commentFound.ProjectID && p.StateProject == Enums.StateProject.Active
@@ -88,14 +79,14 @@ namespace Projects.Infrastructure.Repositories
             Guard.Against.Null(projectFound, nameof(projectFound),
                 $"There is no a project available with ID: {commentFound.ProjectID}.");
 
-            var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
-                                    where i.UidUser == commentFound.UidUser && i.ProjectID == commentFound.ProjectID
-                                    && i.StateInscription == Enums.StateInscription.Approved
-                                    select i)
-                                    .SingleOrDefault();
+            //var inscriptionFound = (from i in await connection.QueryAsync<Inscription>($"SELECT * FROM {_tableNameInscriptions}")
+            //                        where i.UidUser == commentFound.UidUser && i.ProjectID == commentFound.ProjectID
+            //                        && i.StateInscription == Enums.StateInscription.Approved
+            //                        select i)
+            //                        .SingleOrDefault();
 
-            Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
-                    $"There is no an approved inscription or yours in this project.");
+            //Guard.Against.Null(inscriptionFound, nameof(inscriptionFound),
+            //        $"There is no an approved inscription or yours in this project.");
 
             commentFound.SetStateComment(Enums.StateComment.Deleted);
 
@@ -110,12 +101,12 @@ namespace Projects.Infrastructure.Repositories
 
         }
 
-        public async Task<List<Comment>> GetAllCommentsAsync()
+        public async Task<List<Comment>> GetAllCommentsByProjectIdAsync(string idProject)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var commentsFound = (from c in await connection.QueryAsync<Comment>($"SELECT * FROM {_tableNameComments}")
-                                 where c.StateComment != Enums.StateComment.Deleted
+                                 where c.StateComment != Enums.StateComment.Deleted && c.ProjectID == Guid.Parse(idProject)
                                  select c)
                                 .ToList();
             connection.Close();

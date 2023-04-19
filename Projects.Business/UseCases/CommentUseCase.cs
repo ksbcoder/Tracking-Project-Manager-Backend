@@ -19,14 +19,14 @@ namespace Projects.Business.UseCases
             return await _commentRepository.CreateCommentAsync(comment);
         }
 
-        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment)
+        public async Task<UpdateCommentDTO> DeleteCommentAsync(int idComment, string idUser)
         {
-            return await _commentRepository.DeleteCommentAsync(idComment);
+            return await _commentRepository.DeleteCommentAsync(idComment, idUser);
         }
 
-        public async Task<List<Comment>> GetAllCommentsAsync()
+        public async Task<List<Comment>> GetAllCommentsByProjectIdAsync(string idProject)
         {
-            return await _commentRepository.GetAllCommentsAsync();
+            return await _commentRepository.GetAllCommentsByProjectIdAsync(idProject);
         }
     }
 }

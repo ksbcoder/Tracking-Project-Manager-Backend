@@ -38,14 +38,19 @@ namespace Projects.Business.UseCases
             return await _projectRepository.GetAllProjectsAsync();
 
         }
-        public Task<Project> GetProjectByIdAsync(string idProject)
+        public async Task<Project> GetProjectByIdAsync(string idProject)
         {
-            return _projectRepository.GetProjectByIdAsync(idProject);
+            return await _projectRepository.GetProjectByIdAsync(idProject);
         }
 
-        public Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId)
+        public async Task<List<Project>> GetProjectsActiveByLeaderIdAsync(string leaderId)
         {
-            return _projectRepository.GetProjectsByLeaderIdAsync(leaderId);
+            return await _projectRepository.GetProjectsActiveByLeaderIdAsync(leaderId);
+        }
+
+        public async Task<List<Project>> GetProjectsByLeaderIdAsync(string leaderId)
+        {
+            return await _projectRepository.GetProjectsByLeaderIdAsync(leaderId);
         }
 
         public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)

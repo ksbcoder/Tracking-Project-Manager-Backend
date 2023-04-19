@@ -22,5 +22,10 @@ namespace Users.Business.UseCases.Queries
         {
             return await _userQueryRepository.GetUsersAsync();
         }
+
+        public async Task<List<User>> GetActiveUsersAsync()
+        {
+            return await _userQueryRepository.GetActiveUsersAsync();
+        }
     }
 }

@@ -60,8 +60,9 @@ namespace Users.Infrastructure.Repositories
             var users = await _usersCollection.FindAsync(u => u.StateUser != Enums.StateUser.Eliminated);
             var usersList = _mapper.Map<List<User>>(users.ToList());
 
-            return usersList ?? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList),
-                "There isn't any active user available."));
+            return usersList.Count == 0 ? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList),
+                                            "There isn't any active user available."))
+                                        : usersList;
         }
 
         public async Task<User> GetUserByIdAsync(string uidUser)
@@ -99,6 +100,17 @@ namespace Users.Infrastructure.Repositories
                     ? _mapper.Map<UpdateUserDTO>(Guard.Against.Null(userUpdated, nameof(userUpdated),
                             $"There isn't an user available with this uidUser: {uidUser}."))
                     : _mapper.Map<UpdateUserDTO>(await _usersCollection.Find(u => u.UidUser == uidUser).FirstOrDefaultAsync());
+        }
+
+        public async Task<List<User>> GetActiveUsersAsync()
+        {
+            var users = await _usersCollection.FindAsync(u => u.StateUser != Enums.StateUser.Eliminated 
+                                && u.StateUser == Enums.StateUser.Active && u.Role == Enums.Roles.Contributor);
+            var usersList = _mapper.Map<List<User>>(users.ToList());
+
+            return usersList.Count == 0 ? _mapper.Map<List<User>>(Guard.Against.NullOrEmpty(usersList, nameof(usersList),
+                                            "There isn't any active user available."))
+                                        : usersList;
         }
     }
 }

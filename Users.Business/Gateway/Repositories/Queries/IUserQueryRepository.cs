@@ -6,5 +6,6 @@ namespace Users.Business.Gateway.Repositories.Queries
     {
         Task<User> GetUserByIdAsync(string uidUser);
         Task<List<User>> GetUsersAsync();
+        Task<List<User>> GetActiveUsersAsync();
     }
 }
