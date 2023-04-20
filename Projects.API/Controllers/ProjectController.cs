@@ -33,9 +33,9 @@ namespace Projects.API.Controllers
         }
 
         [HttpPut("OpenProject/ID")]
-        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, [FromBody] OpenProjectCommand openProjectCommand)
+        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, string uidUser, [FromBody] OpenProjectCommand openProjectCommand)
         {
-            return await _projectUseCase.OpenProjectAsync(idProject, _mapper.Map<Project>(openProjectCommand));
+            return await _projectUseCase.OpenProjectAsync(idProject, uidUser, _mapper.Map<Project>(openProjectCommand));
         }
 
         [HttpPut("CompleteProject/ID")]

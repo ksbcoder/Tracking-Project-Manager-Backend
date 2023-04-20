@@ -158,7 +158,7 @@ namespace Projects.Infrastructure.Repositories
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
-                                 where p.LeaderID == leaderId && p.StateProject == Enums.StateProject.Active 
+                                 where p.LeaderID == leaderId && p.StateProject == Enums.StateProject.Active
                                  && p.Phase == Enums.Phase.Started
                                  select p)
                                  .ToList();
@@ -184,12 +184,12 @@ namespace Projects.Infrastructure.Repositories
                                         : _mapper.Map<List<Project>>(projectsFound);
         }
 
-        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, Project project)
+        public async Task<UpdateProjectDTO> OpenProjectAsync(string idProject, string uidUser, Project project)
         {
             var connection = await _dbConnectionBuilder.CreateConnectionAsync();
 
             var projectFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
-                                where p.ProjectID == Guid.Parse(idProject)
+                                where p.ProjectID == Guid.Parse(idProject) && p.LeaderID == uidUser
                                         && p.StateProject == Enums.StateProject.Active
                                         && p.OpenDate == null && p.DeadLine == null && p.Phase == null
                                 select p)
@@ -199,7 +199,7 @@ namespace Projects.Infrastructure.Repositories
                 $"There is no a project available or was open already. ID: {idProject}.");
 
             var projectsFound = (from p in await connection.QueryAsync<Project>($"SELECT * FROM {_tableNameProjects}")
-                                 where p.StateProject == Enums.StateProject.Active && p.Phase == Enums.Phase.Started
+                                 where p.LeaderID == uidUser && p.StateProject == Enums.StateProject.Active && p.Phase == Enums.Phase.Started
                                  select p)
                                 .ToList();
 
