@@ -149,6 +149,7 @@ namespace Projects.Tests.ProjectTests
         {
             //Arrange
             var projectID = Guid.NewGuid();
+            var leaderID = "ID";
             var projectToOpen = new Project();
             projectToOpen.SetProjectID(projectID);
             projectToOpen.SetStateProject(Enums.StateProject.Active);
@@ -170,10 +171,10 @@ namespace Projects.Tests.ProjectTests
                 Phase = Enums.Phase.Started,
                 StateProject = Enums.StateProject.Active
             };
-            _mockProjectRepository.Setup(m => m.OpenProjectAsync(projectID.ToString("D"), projectToOpen)).ReturnsAsync(projectOpened);
+            _mockProjectRepository.Setup(m => m.OpenProjectAsync(projectID.ToString("D"), leaderID, projectToOpen)).ReturnsAsync(projectOpened);
 
             //Act
-            var result = await _mockProjectRepository.Object.OpenProjectAsync(projectID.ToString("D"), projectToOpen);
+            var result = await _mockProjectRepository.Object.OpenProjectAsync(projectID.ToString("D"), leaderID, projectToOpen);
 
             //Assert
             Assert.NotNull(result);
